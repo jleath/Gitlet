@@ -5,17 +5,21 @@ Table of Contents
 -----------------
 
 - [Introduction](#intro)
-- [The Planet Class](#planet)
-- [Documentation and Style](#style)
+- [Getting the Skeleton Files](#skeleton)
 - [Understanding the Physics](#physics)
-- [Understanding the Math](#math)
-- [Testing your Planet class](#test)
-- [Reading in the Universe](#read)
-- [Drawing the Initial Universe](#drawing)
+- [Starting the Planet class](#planet)
+- [Completing the Planet class](#complete)
+- [Universe File Format](#fileformat)
+- [Getting Started with the Simulator](#simulator)
+- [Drawing the Initial Universe](#drawiverse)
 - [Creating an Animation](#anime)
-- [Finishing Touches](#finish)
+- [Printing the Universe](#print)
 - [Running the Simulation](#run)
 - [Submission](#submit)
+
+A heads up before you even read the introduction: We've built a huge amount of new infrastructure and new assignments this semester and you are the first cadre of people going through this new 61B curriculum. We apologize in advance for the occasional headaches (particularly with git). It gits better (git it, ha ha?)
+
+This homework is currently in a beta state! It is likely that there is at least one bug in this assignment. Please report any errors directly to Josh at hug@cs.berkeley.edu. 
 
 <a name="intro"></a> Introduction
 ------------
@@ -24,7 +28,7 @@ Before starting this homework, we are assuming that you have watched lecture 2 a
 
 Unlike later HWs, this assignment has a great deal of scaffolding. Future assignments will require significantly more independence. 
 
-Your goal is to write a program simulating the motion of `N` objects in a plane, accounting for the gravitational forces mutually affecting each object as demonstrated by Sir Issac Newton's [Law of Universal Graviation](http://en.wikipedia.org/wiki/Newton%27s_law_of_universal_gravitation). 
+Your goal is to write a program simulating the motion of `N` objects in a plane, accounting for the gravitational forces mutually affecting each object as demonstrated by Sir Issac Newton's [Law of Universal Gravitation](http://en.wikipedia.org/wiki/Newton%27s_law_of_universal_gravitation). 
 
 Specifically, you will be writing a program `NBody.java` that:
 
@@ -33,7 +37,7 @@ Specifically, you will be writing a program `NBody.java` that:
 3.  Simulates the universe according to the command line arguments, animating the results using `StdDraw`.
 5.  Prints the state of the universe at the end of the simulation (in the same format as the input file) using `StdOut` or `System.out`.
 
-<a name="planet"></a> Getting the Skeleton Files
+<a name="skeleton"></a> Getting the Skeleton Files
 ----------------
 
 <p class="redtext">**Before doing anything, make sure you are back on your master branch.**</p>
@@ -51,21 +55,31 @@ For example:
 
 The output above tells us that we are still on the ag/lab1 branch. You do not want to be on this branch, otherwise, you will be submitting your hw1 solution to the lab1 autograder and it will get confused and sad.
 
-To switch branches, use the `git checkout master` command, and verify that you've switched branches below:
+To switch branches, use the `git checkout master` command, and verify that you've switched branches as shown below:
 
     $ git checkout master
     $ git branch
         ag/lab1
         * master
 
-Now make sure you have the latest copy of the skeleton files with by using `git pull skeleton master`. You should see a hw1 directory appear with files that match [the skeleton repostiory](https://github.com/Berkeley-CS61B/skeleton).
+Now make sure you have the latest copy of the skeleton files with by using `git pull skeleton master`. Since you already have a copy of the repository you're pulling, this will cause a merge (as described in the lab guide). A text editor will automatically open asking you to provide a message on why you are merging.
+
+Depending on what computer you're using, you will possibly yourself in one of two obtuse text editors:
+  - vim
+  - emacs
+
+Both of these editors are designed with the power user in mind, with no regard for those stumbling into them by accident. Unfortunately, git will likely default to one of these text editors, meaning that the simple act of providing a merge message may cause you considerable consternation. Don't worry, this is normal! One of the goals of 61B is to teach you to handle these sorts of humps. Indeed, one of the goals of using git this semester was to have you hit these common hurdles now in a friendly pedagogical environment instead of the terrifying real world. However, this also means we're going to suffer sometimes, particularly at this early point in the semester. **Don't panic!**
+
+See [this link](http://stackoverflow.com/questions/11828270/how-to-exit-the-vim-editor) if you are stuck in vim, and type something and then press ctrl-x then ctrl-s to save, then ctrl-x then ctrl-c to exit.
+
+Once you've successfully merged, you should see a hw1 directory appear with files that match [the skeleton repostiory](https://github.com/Berkeley-CS61B/skeleton/tree/master/hw1).
 
 If you get some sort of error, STOP and either figure it out by working through the git guide or seek help. You'll potentially save yourself a lot of trouble this way. 
 
 <a name="planet"></a> The Planet Class and its Constructor
 ----------------
 
-You'll start by creating a Planet class. In your favorite text editor, open up a file called `Planet.java`. If you haven't picked a text editor, I recommend [Sublime Text](http://www.sublimetext.com/). Remember that your .java files should have the same name as the class at it contains.
+You'll start by creating a Planet class. In your favorite text editor, open up a file called `Planet.java`. If you haven't picked a text editor, I recommend [Sublime Text](http://www.sublimetext.com/). Remember that your .java files should have the same name as the class it contains.
 
 All planets will have 6 values stored as instance variables. Those are:
 - Its current x position (x)
@@ -75,7 +89,12 @@ All planets will have 6 values stored as instance variables. Those are:
 - Its mass (mass)
 - The name of the image in the `images` directory that it is associated with (image)
 
-Start by adding in a constructor that takes in 6 arguments and intializes an instance of the Planet class.
+Your instance varaibles must be named exactly as above. Start by adding in a constructor that takes in 6 arguments and intializes an instance of the Planet class. The signature of the constructor should be:
+
+    public Planet(double ??, double ??, double ??,
+                  double ??, double ??, String ??)
+
+<p class="redtext">Warning, do not give your parameter names the same name as these instance variables. If you insist on doing so for aesthetic reasons, make sure to use the `this` keyword appropriately (mentioned only briefly in lecture and not at all in HFJ).</p>
 
 All of the numbers for this homework will be doubles. We'll go over what exactly a double is later in the course, but for now, think of it is a real number, e.g. `double x = 3.5`. In addition, all instance variables and methods will be declared using the public keyword. 
 
@@ -85,9 +104,7 @@ You can compile with the command:
 
     javac  Planet.java TestPlanetConstructor.java
 
-javac is the name of the Java compiler. 
-
-You can run the unit test with the command
+You can run our provided test with the command
 
     java TestPlanetConstructor
 
@@ -116,8 +133,9 @@ In addition, all planets have:
     + a<sub>x</sub> = F<sub>x</sub> / m
     + a<sub>y</sub> = F<sub>y</sub> / m
 
-Planet Methods
---------------
+
+<a name="planet"></a>Starting the Planet Class
+--------
 
 Now that you know what Planets actually do, let's add methods to the Planet class.
 
@@ -169,14 +187,14 @@ We also want a planet to be able to draw itself at its appropriate position. Cre
 To fill out this method, you'll need to check out the StdDraw API from the
 [Princeton Standard Library](http://introcs.cs.princeton.edu/java/stdlib/javadoc/).
 
-<a name="math"></a>Understanding the Math
+<a name="complete"></a>Completing the Planet Class
 ----------------------
 
 Now that we have the methods in the Planet class that can simulate the physics, let's take a step back and see how these methods will play together.
 
 To create our simulation, we will discretize time (please do not mention this to Stephen Hawking). The idea is that at every discrete interval, we will be doing our calculations and once we have done our calculations for that time step, we will then update the values of our Planets and then redraw the universe. 
 
-The steps below illustrate how to update the positions and velocities of the particles. 
+We'll use the algorithm below to update the positions and velocities of the planets. 
 
 1. For each planet, set the net force.
 2. Calculate and set the acceleration using the net force computed in Step 1.
@@ -185,7 +203,7 @@ The steps below illustrate how to update the positions and velocities of the par
 
 #### update
 
-Now add the update method to the Planet class. update is a void method and will take in just one double parameter which you should call dt.
+Add a method called `update` to the Planet class. update is a void method and will take in just one double parameter which you should call dt. It should perform the last three steps of the process described above (i.e. the `update` method assumes that the net force has already been set).
 
 Once you're done, recompile and test your method with:
 
@@ -201,10 +219,10 @@ As the semester preogresses, we'll be giving you less and less tests, and it wil
 
 Go ahead and try writing your own test for the Planet class. Make a `TestPlanet.java` file and write a test that creates two planets and prints out the pairwise force between them. We will not be grading this part of the assignment.
 
-<a name="read"></a>Reading in the Universe
+<a name="fileformat"></a>Universe File Format
 -----------------------
 
-The input format is a text file that contains the information for a particular universe (in SI units). The first value is an integer `N` which represents the number of particles. The second value is a real number `R` which represents the radius of the universe, used to determine the scaling of the drawing window. Finally, there are `N` rows, and each row contains 6 values. The first two values are the x- and y-coordinates of the initial position; the next pair of values are the x- and y-components of the initial velocity; the fifth value is the mass; the last value is a String that is the name of an image file used to display the particle. Image files can be found in the `images` directory. As an example, planets.txt contains data for our own solar system (up to Mars): 
+Before we start writing the simulator, it'd be a good idea to know the file format that stores the state of the universe. The input format is a text file that contains the information for a particular universe (in SI units). The first value is an integer `N` which represents the number of particles. The second value is a real number `R` which represents the radius of the universe, used to determine the scaling of the drawing window. Finally, there are `N` rows, and each row contains 6 values. The first two values are the x- and y-coordinates of the initial position; the next pair of values are the x- and y-components of the initial velocity; the fifth value is the mass; the last value is a String that is the name of an image file used to display the particle. Image files can be found in the `images` directory. As an example, planets.txt contains data for our own solar system (up to Mars): 
 
     $ more planets.txt
     5
@@ -217,48 +235,47 @@ The input format is a text file that contains the information for a particular u
 
 Don't write any code for reading in this file yet. This section is just an example of the file format. 
 
-#### NBody.java
 
-Getting Started
+<a name="simulator"></a>Getting Started with the Simulator (NBody.java)
 -----
 
-NBody is a class what will actually run your simulation. This class will have NO constructor. Instead, most of the work will be done in the `main` method.
+NBody is a class that will actually run your simulation. This class will have NO constructor. Instead, most of the work will be done in the `main` method.
 
-Create an `NBody.java` file. Create a main method in the NBody class. Your NBody class should perform the following steps:
+Create an `NBody.java` file. Create a main method in the NBody class. Write code so that your NBody class performs the following steps:
 
  - Store the 0th and 1st command line arguments as doubles named `T` and `dt`.
  - Store the 2nd command line argument as a String named `filename`. 
- - Create a new instanced of the In class using the `filename`. See the code examples from lecture 2 or the Princeton Standard Library documentation. 
+ - Create a new instance of the In class using the `filename`. See the code examples from lecture 2 or the Princeton Standard Library documentation. 
  - Read in the number of planets and the universe radius from the file. You will find `readInt()` and `readDouble()` useful. 
 
  There is no automated testing for this part. You will need to convince yourself that your code works.
 
 #### getPlanet
 
-Before we finish main, we'll add a helper method to the NBody class. This method will have to be __static__. (We'll cover exactly why it has to be static soon, but for now take it as it is).
+Before we proceed with drawing anything, we'll add a helper method to the NBody class. This method will have to be __static__. 
 
-Make a new static method getPlanet that takes the In method as an argument, and reads from it the information for the next Planet object. It will then instantiate that Planet and return it. Do not hesitate to ask for help if you are stuck here. 
+Make a new static method `getPlanet` that takes the In method as an argument, and reads from it the information for the next Planet object. It will then instantiate that Planet and return it. Do not hesitate to ask for help if you are stuck here. 
 
-Note that getPlanet will NOT work on an in unless that file has already had its number of planets and universe radius read.
-
-At this point you can compile NBody.java and run our test for the getPlanet method
+Once you've written getPlanet, you can compile NBody.java and run our test for the getPlanet method as follows:
 
     javac NBody.java Planet.java TestGetPlanet.java
     java TestGetPlanet
 
-<a name="draw"></a>Drawing the Initial Universe State
+Note that getPlanet will NOT work on an In unless the In has already had its number of planets and universe radius read. 
+
+<a name="drawiverse"></a>Drawing the Initial Universe State
 ------
 
-Let's head back to the main method. After reading in the number of planets and the size of the universe, your main method should now:
+Let's head back to the main method. Add code so that after reading in the number of planets and the size of the universe, your main method does the following:
 
   - Read all the planets into an array of the appropriate size.
   - Set the scale of the universe. You will need to see the StdDraw documentation for how to do this.
-  - Draw the initial universe. First draw the image `starfield.jpg`and then draw all the planets in their appropriate locations (using the draw method of each individual planet in your array).
+  - Draw the initial state of the universe. First draw the image `starfield.jpg`and then draw all the planets in their appropriate locations (using the draw method of each individual planet in your array).
 
 Test that your main method works with the following command:
     java NBody 157788000.0 25000.0 data/planets.txt
 
-You should see the sun and four planets sitting motionless. Your are almost done.
+You should see the sun and four planets sitting motionless. You are almost done.
 
 <a name="anime"></a> Creating an animation
 ------
@@ -277,8 +294,21 @@ Everything you've done so far is leading up to this moment. With only a bit more
 
 (Optional) For a finishing touch, play the theme to *2001: A Space Odyssey* using `StdAudio` and the file `2001.mid`. Feel free to add your own audio files and create your own soundtrack!s
 
-<a name="finish"></a>Finishing Touches
------------- 
+<a name="run"></a>Running the Simulation
+----------------------------------
+To compile your program, type in your command line:
+
+> javac NBody.java
+
+To execute your program, you will need to include three command line arguments For example:
+
+> java NBody 157788000.0 25000.0 data/planets.txt
+
+
+Make sure to also try out some of the other simulations, which can all be found in the `data` directory.
+
+<a name="print"></a> Printing the Universe
+-------
 
 When the simulation is over, i.e. when you've reached time `T`, you should print out the final state of the universe in the same format as the input, e.g.:
 
@@ -292,27 +322,11 @@ When the simulation is over, i.e. when you've reached time `T`, you should print
 
 You are welcome to try to figure this out on your own, but if you'd prefer not to, you can find a solution in the [hw hints](hints.txt).
 
-<a name="run"></a>Compiling and Running Your Program
-----------------------------------
-To compile your program, type in your command line:
-
-> javac NBody.java
-
-To execute your program, you will need to include three command line arguments For example:
-
-> java NBody 157788000.0 25000.0 data/planets.txt
-
-
-Make sure to also try out some of the other simulations, which can all be found in the `data` directory.
-
-Files to turn in
-------------
-You will turn in `NBody.java` and `Planet.java`. 
+This isn't all that exciting, but we'll need this information to autograde your assignment.
 
 <a name="submit"></a>Submission
 ----------
-####TODO
 
-To submit this hw...
+Instructions for submitting assignment are pending. Coming soon!
 
 **Acknowledgements**: This assignment was adapted from an assignment created by Robert Sedgewick and Kevin Wayne from Princeton University.
