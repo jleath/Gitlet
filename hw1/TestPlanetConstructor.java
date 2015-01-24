@@ -16,7 +16,7 @@ public class TestPlanetConstructor {
      *
      *  @param  d1      Double received
      *  @param  d2      Expected double
-     *  @param  label   Label for the 'test' case
+     *  @param  label   Label for the 'test' case
      */
     private static void checkEquals(double d1, double d2, String label) {
         if (d1 == d2) {
