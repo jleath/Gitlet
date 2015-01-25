@@ -25,8 +25,8 @@ public class Planet {
      * using the Pythagorean Theorem.
      */
     public double calcDistance(Planet other) {
-        double xDistance = Math.abs(this.x - other.x);
-        double yDistance = Math.abs(this.y - other.y);
+        double xDistance = this.x - other.x;
+        double yDistance = this.y - other.y;
         return Math.sqrt(xDistance * xDistance +
                          yDistance * yDistance);
     }
@@ -52,7 +52,7 @@ public class Planet {
     public double calcPairwiseForceX(Planet other) {
         double f = this.calcPairwiseForce(other);
         double r = this.calcDistance(other);
-        double xDist = Math.abs(this.x - other.x);
+        double xDist = other.x - this.x;
         return f * xDist / r;
     }
 
@@ -65,7 +65,7 @@ public class Planet {
     public double calcPairwiseForceY(Planet other) {
         double f = this.calcPairwiseForce(other);
         double r = this.calcDistance(other);
-        double yDist = Math.abs(this.y - other.y);
+        double yDist = other.y - this.y;
         return f * yDist / r;
     }
 
@@ -91,7 +91,7 @@ public class Planet {
      * StdDraw API
      */
     public void draw() {
-        StdDraw.picture(this.x, this.y, this.img);
+        StdDraw.picture(this.x, this.y, "images/" + this.img);
     }
 
     /* Updates the acceleration, velocity, and the position
@@ -99,11 +99,11 @@ public class Planet {
      * intervals.
      */
     public void update(double dt) {
-        this.xAccel = xNetForce / mass;
-        this.yAccel = yNetForce / mass;
-        this.xVelocity = this.xVelocity + dt * this.xAccel;
-        this.yVelocity = this.yVelocity + dt * this.yAccel;
-        this.x = this.x + dt * this.xVelocity;
-        this.y = this.y + dt * this.yVelocity;
+        xAccel = xNetForce / mass;
+        yAccel = yNetForce / mass;
+        xVelocity = xVelocity + dt * xAccel;
+        yVelocity = yVelocity + dt * yAccel;
+        x = x + dt * xVelocity;
+        y = y + dt * yVelocity;
     }
 }
