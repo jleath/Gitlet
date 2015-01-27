@@ -42,6 +42,6 @@ public class IntListTest {
 
     /* Run the unit tests in this file. */
     public static void main(String... args) {
-        jh61b.cb.junit.textui.runClasses(IntListTest.class);
+        jh61b.junit.textui.runClasses(IntListTest.class);
     }       
 }   

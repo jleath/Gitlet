@@ -19,15 +19,94 @@ public class IntList {
   /** A List with null tail, and head = 0. */
   public IntList() {
     /* NOTE: public IntList () { }  would also work. */
-    this (0, null);
+    this(0, null);
   }
 
-  /* YOU DO NOT NEED TO LOOK AT ANY CODE BELOW THIS LINE UNTIL
-     YOU GET TO THE PROBLEMS YOU NEED TO SOLVE. Search for 'FILL IN'
-     and you'll be where you need to go. */
+  /** Returns a list equal to L with all elements squared. Destructive. */
+  public static void dSquareList(IntList L) {
+
+    while (L != null) {
+      L.head = L.head * L.head;
+      L = L.tail;
+    }
+  }
+
+  /** Returns a list equal to L with all elements squared. Non-destructive. */
+  public static IntList squareListIterative(IntList L) {
+    if (L == null) {
+      return null;
+    }
+    IntList res = new IntList(L.head * L.head, null);
+    IntList ptr = res;
+    L = L.tail;
+    while (L != null) {
+      ptr.tail = new IntList(L.head * L.head, null);
+      L = L.tail;
+      ptr = ptr.tail;
+    }
+    return res;
+  }
+
+  /** Returns a list equal to L with all elements squared. Non-destructive. */
+  public static IntList squareListRecursive(IntList L) {
+    if (L == null) {
+      return null;
+    }
+    return new IntList(L.head * L.head, squareListRecursive(L.tail));
+  }
+
+  /** DO NOT MODIFY ANYTHING ABOVE THIS LINE! */
 
 
-  /** Returns a new IntList containing the ints in ARGS. */
+  /** Returns a list consisting of the elements of A followed by the
+   **  elements of B.  May modify items of A. Don't use 'new'. */
+
+  public static IntList dcatenate(IntList A, IntList B) {
+    //TODO:  fill in method
+    return null;
+  }
+
+  /** Returns a list consisting of the elements of A followed by the
+   ** elements of B.  May NOT modify items of A.  Use 'new'. */
+  public static IntList catenate(IntList A, IntList B) {
+    //TODO:  fill in method
+    return null;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /** DO NOT MODIFY ANYTHING BELOW THIS LINE! In fact, I wouldn't even
+    * look below this line since it's likely to confuse you. */
+
+  @Override
+  public int hashCode() {
+    return head;
+  }
+
+  /** Returns a new IntList containing the ints in ARGS. You are not
+    * expected to read or understand this method. */
   public static IntList list(Integer ... args) {
     IntList result, p;
 
@@ -45,7 +124,8 @@ public class IntList {
   }
 
   /** Returns true iff X is an IntList containing the same sequence of ints
-   *  as THIS. Cannot handle IntLists with cycles. */
+   *  as THIS. Cannot handle IntLists with cycles. You are not expected to
+   *  read or understand this method. */
   public boolean equals(Object x) {
     if (!(x instanceof IntList)) {
       return false;
@@ -64,17 +144,15 @@ public class IntList {
     return true;
   }
 
-  @Override
-  public int hashCode() {
-    return head;
-  }
-
-
   /** If a cycle exists in the IntList, this method
-   *  returns an integer equal to the item number of the
-   *  location where the cycle is detected.
+   *  returns an integer equal to the item number of the location where the
+   *  cycle is detected.
    *
-   *  If there is no cycle, the number 0 is returned instead.
+   *  If there is no cycle, the number 0 is returned instead. This is a
+   *  utility method for lab2. You are not expected to read, understand, or
+   *  even use this method. The point of this method is so that if you convert
+   *  an IntList into a String and that IntList has a loop, your computer
+   *  don't get stuck in an infinite loop.
    */
 
   private int detectCycles(IntList A) {
@@ -105,6 +183,8 @@ public class IntList {
   }
 
   @Override
+  /** Outputs the IntList as a String. You are not expected to read
+    * or understand this method. */
   public String toString() {
     Formatter out = new Formatter();
     String sep;
@@ -124,54 +204,6 @@ public class IntList {
     }
     out.format(")");
     return out.toString();
-  }
-
-  static void dSquareList(IntList L) {
-
-    while (L != null) {
-      L.head = L.head * L.head;
-      L = L.tail;
-    }
-  }
-
-  static IntList squareListIterative(IntList L) {
-    if (L == null) {
-      return null;
-    }
-    IntList res = new IntList(L.head * L.head, null);
-    IntList ptr = res;
-    L = L.tail;
-    while (L != null) {
-      ptr.tail = new IntList(L.head * L.head, null);
-      L = L.tail;
-      ptr = ptr.tail;
-    }
-    return res;
-  }
-
-  static IntList squareListRecursive(IntList L) {
-    if (L == null) {
-      return null;
-    }
-    return new IntList(L.head * L.head, squareListRecursive(L.tail));
-  }
-
-  /** DO NOT MODIFY ANYTHING ABOVE THIS LINE! */
-  //FILL IN
-
-  /** Returns a list consisting of the elements of A followed by the
-   **  elements of B.  May modify items of A. Don't use 'new'. */
-
-  static IntList dcatenate(IntList A, IntList B) {
-    //TODO:  fill in method
-    return null;
-  }
-
-  /** Returns a list consisting of the elements of A followed by the
-   ** elements of B.  May NOT modify items of A.  Use 'new'. */
-  static IntList catenate(IntList A, IntList B) {
-    //TODO:  fill in method
-    return null;
   }
 }
 

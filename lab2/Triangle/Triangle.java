@@ -13,6 +13,7 @@ public class Triangle {
     s3 = side3;
   }
 
+  /** Returns a String describing the type of triangle. */
   public String triangleType() {
 
     // Chceck that nothing is negative
