@@ -1,7 +1,7 @@
 ~ number: 1
-~ title: Java Basics
+~ title: NBody Simulation (BETA)
 
-Table of Contents
+Navigation
 -----------------
 
 - [Introduction](#intro)
@@ -70,7 +70,7 @@ Depending on what computer you're using, you will possibly yourself in one of tw
 
 Both of these editors are designed with the power user in mind, with no regard for those stumbling into them by accident. Unfortunately, git will likely default to one of these text editors, meaning that the simple act of providing a merge message may cause you considerable consternation. Don't worry, this is normal! One of the goals of 61B is to teach you to handle these sorts of humps. Indeed, one of the goals of using git this semester was to have you hit these common hurdles now in a friendly pedagogical environment instead of the terrifying real world. However, this also means we're going to suffer sometimes, particularly at this early point in the semester. **Don't panic!**
 
-See [this link](http://stackoverflow.com/questions/11828270/how-to-exit-the-vim-editor) if you are stuck in vim, and type something and then press ctrl-x then ctrl-s to save, then ctrl-x then ctrl-c to exit.
+See [this link](http://stackoverflow.com/questions/11828270/how-to-exit-the-vim-editor) if you are stuck in vim. If you are in emacs, type something and then press ctrl-x then ctrl-s to save, then ctrl-x then ctrl-c to exit.
 
 Once you've successfully merged, you should see a hw1 directory appear with files that match [the skeleton repostiory](https://github.com/Berkeley-CS61B/skeleton/tree/master/hw1).
 
@@ -79,7 +79,7 @@ If you get some sort of error, STOP and either figure it out by working through 
 <a name="planet"></a> The Planet Class and its Constructor
 ----------------
 
-You'll start by creating a Planet class. In your favorite text editor, open up a file called `Planet.java`. If you haven't picked a text editor, I recommend [Sublime Text](http://www.sublimetext.com/). Remember that your .java files should have the same name as the class it contains.
+You'll start by creating a Planet class. In your favorite text editor, create a file called `Planet.java`. If you haven't picked a text editor, I recommend [Sublime Text](http://www.sublimetext.com/). Remember that your .java files should have the same name as the class it contains.
 
 All planets will have 6 values stored as instance variables. Those are:
 - Its current x position (x)
@@ -87,7 +87,7 @@ All planets will have 6 values stored as instance variables. Those are:
 - Its current velocity in the x direction (xVelocity)
 - Its current velocity in the y direction (yVelocity)
 - Its mass (mass)
-- The name of the image in the `images` directory that it is associated with (image)
+- The name of the image in the `images` directory that it is associated with (img)
 
 Your instance varaibles must be named exactly as above. Start by adding in a constructor that takes in 6 arguments and intializes an instance of the Planet class. The signature of the constructor should be:
 
@@ -160,14 +160,14 @@ The next method that you will fill out will be calcPairwiseForce. This method wi
 Once you've finished calcPairwiseForce, re-compile and run the next unit test.
 
     javac Planet.java TestCalcPairwiseForce.java
-    java TestPairwiseForce
+    java TestCalcPairwiseForce
 
 #### calcPairwiseForceX and calcPairwiseForceY
 
 The next two methods that you should write are calcPairwiseForceX and calcPairwiseForceY. This is very similar to the previous part that you've just finished. Once you've finished, you can recompile and run the next unit test.
 
     javac Planet.java TestCalcPairwiseForceXY.java
-    java TestPairwiseForceXY
+    java TestCalcPairwiseForceXY
 
 #### setNetForce
 
