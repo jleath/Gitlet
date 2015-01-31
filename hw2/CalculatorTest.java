@@ -15,12 +15,23 @@ public class CalculatorTest {
      **/
     @Before
     public void setUp() {
-        tester = new StaffCalculator(); // Comment me out to test your Calculator
-        // tester = new Calculator();   // Un-comment me to test your Calculator
+        // tester = new StaffCalculator(); // Comment me out to test your Calculator
+        tester = new Calculator();   // Un-comment me to test your Calculator
     }
 
     // TASK 1: WRITE JUNIT TESTS
-    // YOUR CODE HERE
+    @Test
+    public void testAdd() {
+        int test = tester.add(5, 5);
+        assertEquals(10, test);
+        test = tester.add(5, -5);
+        assertEquals(0, test);
+        test = tester.add(-5, -5);
+        assertEquals(-10, test);
+        assertEquals(20, tester.add(10, 10));
+        assertEquals(11497, tester.add(1074, 10423));
+        assertEquals(-2147483648, tester.add(2147483647, 1));
+    }
 
     /* Run the unit tests in this file. */
     public static void main(String... args) {

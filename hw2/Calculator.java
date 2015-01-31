@@ -12,8 +12,41 @@ public class Calculator {
      * @return the sum of x and y
      **/
     public int add(int x, int y) {
-        // YOUR CODE HERE
-        return -1;
+        int sum = 0;
+        int carry = 0;
+        int mask = 1;
+        // for each bit in x and y
+        for (int i = 0; i < 32; i++) {
+            // push the current bit all the way to the right
+            int maskedX = x >> i;
+            int maskedY = y >> i;
+            // remove all but the rightmost bit
+            maskedX = mask & maskedX;
+            maskedY = mask & maskedY;
+
+            int result = 0;
+            // add the rightmost bits
+            if ((maskedX & maskedY) == 1) {
+                result = 0 | carry;
+                carry = 1;
+            } else if ((maskedX | maskedY) == 1) {
+                result = 1;
+                if (carry == 1) {
+                    result = 0;
+                    carry = 1;
+                }
+            } else {
+                result = 0;
+                if (carry == 1) {
+                    result = 1;
+                    carry = 0;
+                }
+            }
+            // push result back to the proper position
+            result = result << i;
+            sum = sum | result;
+        }
+        return sum;
     }
 
     /**
