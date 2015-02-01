@@ -1,7 +1,7 @@
 import list.EquationList;
 
 public class Calculator {
-    // YOU MAY WISH TO ADD SOME FIELDS
+    private EquationList equations;
 
     /**
      * TASK 2: ADDING WITH BIT OPERATIONS
@@ -60,6 +60,12 @@ public class Calculator {
     public int multiply(int x, int y) {
         int result = x;
         int multiplier = y;
+        boolean negative_result = false;
+        if (y < 0) {
+            if (x > 0)
+                negative_result = true;
+            y = ~(y-1);
+        }
         int mults_done = 1;
         while (multiplier >= 2) {
             result = result << 1;
@@ -70,6 +76,8 @@ public class Calculator {
             result = add(result, x);
             mults_done = add(mults_done, 1);
         }
+        if (negative_result)
+            result = ~result + 1;
         return result;
     }
 
@@ -83,7 +91,11 @@ public class Calculator {
      * @param result is an integer corresponding to the result of the equation
      **/
     public void saveEquation(String equation, int result) {
-        // YOUR CODE HERE
+        if (equations == null) {
+            equations = new EquationList(equation, result, null);
+        } else {
+            equations = new EquationList(equation, result, equations);
+        }
     }
 
     /**
@@ -94,7 +106,7 @@ public class Calculator {
      * Ex   "1 + 2 = 3"
      **/
     public void printAllHistory() {
-        // YOUR CODE HERE
+        printHistory(equations.length());
     }
 
     /**
@@ -105,7 +117,17 @@ public class Calculator {
      * Ex   "1 + 2 = 3"
      **/
     public void printHistory(int n) {
-        // YOUR CODE HERE
+        if (n > equations.length()) {
+            printAllHistory();
+            return;
+        }
+        int eqs_printed = 0;
+        EquationList ptr = equations;
+        while (eqs_printed < n) {
+            System.out.println(ptr.equation + " = " + ptr.result);
+            eqs_printed += 1;
+            ptr = ptr.next;
+        }
     }    
 
     /**

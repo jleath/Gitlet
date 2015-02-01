@@ -14,6 +14,16 @@ public class CalculatorUI {
             String first = StdIn.readString();
             if (first.equals("quit"))
                 System.exit(0);
+            // check for history
+            if (first.equals("dump")) {
+                calc.printAllHistory();
+                continue;
+            }
+            if (first.equals("history")) {
+                int n = StdIn.readInt();
+                calc.printHistory(n);
+                continue;
+            }
             // get operands and operator
             int a = Integer.parseInt(first);
             StdIn.readChar();
@@ -30,6 +40,8 @@ public class CalculatorUI {
                 System.out.println("Invalid operator.");
                 System.exit(0);
             }
+            // Save the equation
+            calc.saveEquation(a + " " + op + " " + b, result);
             // print the result
             System.out.println(result);
         }

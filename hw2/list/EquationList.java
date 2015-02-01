@@ -21,4 +21,14 @@ public class EquationList {
         this.result = result;
         this.next = next;
     }
+
+    public int length() {
+        int result = 0;
+        EquationList ptr = this;
+        while (ptr != null) {
+            result = result + 1;
+            ptr = ptr.next;
+        }
+        return result;
+    }
 }
