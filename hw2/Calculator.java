@@ -106,6 +106,8 @@ public class Calculator {
      * Ex   "1 + 2 = 3"
      **/
     public void printAllHistory() {
+        if (equations == null)
+            return;
         printHistory(equations.length());
     }
 
@@ -117,6 +119,8 @@ public class Calculator {
      * Ex   "1 + 2 = 3"
      **/
     public void printHistory(int n) {
+        if (equations == null)
+            return;
         if (n > equations.length()) {
             printAllHistory();
             return;
@@ -135,7 +139,11 @@ public class Calculator {
      * undoEquation() removes the most recent equation we saved to our history.
     **/
     public void undoEquation() {
-        // YOUR CODE HERE
+        if (equations == null) {
+            System.out.println("There are no equations to undo.");
+            return;
+        }
+        equations = equations.next;
     }
 
     /**
@@ -143,7 +151,7 @@ public class Calculator {
      * clearHistory() removes all entries in our history.
      **/
     public void clearHistory() {
-        // YOUR CODE HERE
+        equations = null;
     }
 
     /**
@@ -153,8 +161,13 @@ public class Calculator {
      * @return the sum of all of the results in history
      **/
     public int cumulativeSum() {
-        // YOUR CODE HERE
-        return -1;
+        int result = 0;
+        EquationList ptr = equations;
+        while (ptr != null) {
+            result += ptr.result;
+            ptr = ptr.next;
+        }
+        return result;
     }
 
     /**
@@ -164,7 +177,12 @@ public class Calculator {
      * @return the product of all of the results in history
      **/
     public int cumulativeProduct() {
-        // YOUR CODE HERE
-        return -1;
+        int result = 1;
+        EquationList ptr = equations;
+        while (ptr != null) {
+            result *= ptr.result;
+            ptr = ptr.next;
+        }
+        return result;
     }
 }

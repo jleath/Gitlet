@@ -43,6 +43,7 @@ public class CalculatorTest {
         assertEquals(tester.multiply(0, 51), 0);
         assertEquals(tester.multiply(7, 7), 49);
         assertEquals(tester.multiply(16, 16), 256);
+        assertEquals(tester.multiply(16, -16), -256);
     }
 
     /* Run the unit tests in this file. */
