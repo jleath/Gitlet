@@ -58,8 +58,19 @@ public class Calculator {
      * @return the product of x and y
      **/
     public int multiply(int x, int y) {
-        // YOUR CODE HERE
-        return -1;
+        int result = x;
+        int multiplier = y;
+        int mults_done = 1;
+        while (multiplier >= 2) {
+            result = result << 1;
+            multiplier = multiplier / 2;
+            mults_done = add(mults_done, mults_done);
+        }
+        while (mults_done != y) {
+            result = add(result, x);
+            mults_done = add(mults_done, 1);
+        }
+        return result;
     }
 
     /**

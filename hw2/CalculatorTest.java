@@ -33,6 +33,18 @@ public class CalculatorTest {
         assertEquals(-2147483648, tester.add(2147483647, 1));
     }
 
+    @Test
+    public void testMultiply() {
+        assertEquals(tester.multiply(4, 2), 8);
+        assertEquals(tester.multiply(4, 4), 16);
+        assertEquals(tester.multiply(10, 16), 160);
+        assertEquals(tester.multiply(1, 5), 5);
+        assertEquals(tester.multiply(52, 3), 156);
+        assertEquals(tester.multiply(0, 51), 0);
+        assertEquals(tester.multiply(7, 7), 49);
+        assertEquals(tester.multiply(16, 16), 256);
+    }
+
     /* Run the unit tests in this file. */
     public static void main(String... args) {
         jh61b.junit.textui.runClasses(CalculatorTest.class);
