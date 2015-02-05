@@ -4,6 +4,7 @@ public class DoubleChain {
 	private DNode head;
 	
 	public DoubleChain(double val) {
+		/* your code here. */
 		head = null; 
 	}
 
