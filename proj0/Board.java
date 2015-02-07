@@ -2,7 +2,7 @@ public class Board {
     private int boardSize = 8;
     private Piece[][] pieces;
  
-    /** Board Constructor
+    /** Board Constructors
      *  @param shouldBeEmpty Represents whether a board is empty or not.
      */
     public Board(boolean shouldBeEmpty) {
@@ -17,6 +17,11 @@ public class Board {
             }
         }  
     }
+
+    public Board() {
+        this(false);
+    }
+
     //TODO
     /** Returns the piece located at board[x][y]. */
     public Piece pieceAt(int x, int y) {
@@ -90,13 +95,19 @@ public class Board {
     private void drawBoard() {
         for (int row = 0; row < boardSize; row += 1) {
             for (int col = 0; col < boardSize; col += 1) {
+
                 // Handle squares
-                if ((row + col) % 2 == 0)
+                if ((row + col) % 2 == 0) {
                     StdDrawPlus.setPenColor(StdDrawPlus.GRAY);
-                else
+                }
+                else {
                     StdDrawPlus.setPenColor(StdDrawPlus.RED);
+                }
+
                 StdDrawPlus.filledSquare(row + .5, col + .5, .5);
+
                 StdDrawPlus.setPenColor(StdDrawPlus.WHITE);
+
                 // Handle pieces
                 if (this.pieces[row][col] != null) {
                     drawPiece(pieces[row][col], row, col);
@@ -105,23 +116,40 @@ public class Board {
         }
     }
 
-    /** Draws a piece on the board. */
-    private void drawPiece(Piece p, int x, int y) {
-        String imgFile = "";
-        String crownedStr = "";
-        String typeStr;
+    /** Returns the string "fire" if P is a fire piece, else "water"
+     */
+    private String getElementString(Piece p) {
         if (p.isFire())
-            typeStr = "fire";
+            return "fire";
         else
-            typeStr = "water";
+            return "water";
+    }
+
+    /** Returns a string containing the type of the piece P.
+     *  @return "bomb", "shield", or "pawn"
+     */
+    private String getTypeString(Piece p) {
+        if (p.isBomb())
+            return "bomb";
+        if (p.isShield())
+            return "shield";
+        else
+            return "pawn";
+    }
+
+    /** Constructs a path to a game piece image, and then draws that
+     *  image on the board in the correct position.
+     */
+    private void drawPiece(Piece p, int x, int y) {
+        String imgDir = "img/";
+        String imgSuffix = ".png";
+        String crownedStr = "";
         if (p.isKing())
             crownedStr = "-crowned";
-        if (p.isBomb())
-            imgFile = "img/bomb-" + typeStr + crownedStr + ".png";
-        else if (p.isShield())
-            imgFile = "img/shield-" + typeStr + crownedStr + ".png";
-        else
-            imgFile = "img/pawn-" + typeStr + crownedStr + ".png";
+        String elementStr = getElementString(p);
+        String typeStr = getTypeString(p);
+        String imgFile = imgDir + typeStr + "-" + 
+                         elementStr + crownedStr + imgSuffix;
         StdDrawPlus.picture(x + .5, y + .5, imgFile, 1, 1);
     }
 
@@ -134,7 +162,7 @@ public class Board {
         while (true) {
             gameBoard.drawBoard();
             // Handle other events
-            StdDrawPlus.show(100);
+            StdDrawPlus.show(1);
         }
     }
 }
