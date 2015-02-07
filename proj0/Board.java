@@ -17,34 +17,67 @@ public class Board {
             }
         }  
     }
+    //TODO
+    /** Returns the piece located at board[x][y]. */
+    public Piece pieceAt(int x, int y) {
+        return null;
+    }
+    //TODO
+    /** Places a Piece, P, at position (x, y) on the game board.
+     *  If (x, y) is an invalid position, or P is null, does nothing.
+     *  If P is already on the board, removes from its original position first.
+     *  Will replace any existing piece at (x, y)
+     */
+    public void place(Piece p, int x, int y) {
+        return;
+    }
+    //TODO
+    /** Removes the piece at position (x, y) from the game board and returns it.
+     *  If (x, y) is an invalid position, returns null and alerts the user.
+     */
+    public Piece remove(int x, int y) {
+        return null;
+    }
+
+    /** Returns True if the starting piece at position (x, y) is a 
+     *  fire piece, else false.
+     */
+    private boolean startsAsFire(int x, int y) {
+        return y < 3;
+    }
+
+    /** Returns true if the starting piece at position (x, y) is a
+     *  null piece, else false.
+     */
+    private boolean startsAsNull(int x, int y) {
+        return (y >= 3 && y < boardSize - 3);
+    }
+
+    /** Determines the type of the starting piece at position (x, y).
+     *  @return A string containing either "pawn", "shield", or "bomb".
+     */
+    private String getStartingType(int x, int y) {
+        if (y == 0 || y == boardSize - 1)
+            return "pawn";
+        else if (y == 1 || y == boardSize - 2)
+            return "shield";
+        else if (y == 2 || y == boardSize - 3) 
+            return "bomb";
+        else
+            return "";
+    }
 
     /** Figures out what type of piece needs to be added at (i, j) on the
      *  gameboard and then adds it to the board's pieces array.
      */
     private void addPiece(int i, int j) {
         // determine whether a piece is fire or not
-        boolean isFire = false;
-        String type = "";
-        if (j < 3) {
-            isFire = true;
-        } else if (j > 4) {
-            isFire = false;
-        } else {
+        if (startsAsNull(i, j)) {
             pieces[i][j] = null;
             return;
         }
-        // Determine what kind of piece we need or if we don't need one at all
-        if (j == 0 || j == boardSize - 1) {
-            type = "pawn";
-        } else if (j == 1 || j == boardSize - 2) {
-            type = "shield";
-        } else if (j == 2 || j == boardSize - 3) {
-            type = "bomb";
-        } else {
-            pieces[i][j] = null;
-            return;
-        }
-        // add the piece
+        boolean isFire = startsAsFire(i, j); 
+        String type = getStartingType(i, j);
         pieces[i][j] = new Piece(isFire, this, i, j, type);
     }
 
