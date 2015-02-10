@@ -33,6 +33,17 @@ public class Piece {
         hasCaptured = false;
     }
 
+    /** Prints out the details of a piece.
+     */
+    public void printPiece() {
+        String element = "";
+        if (this.isFire())
+            element = "fire";
+        else
+            element = "water";
+        System.out.println(element + " " + type + " " + xPos + " " + yPos);
+    }
+
     /** @return True if the piece is a fire piece, else False.
      */
     public boolean isFire() {
@@ -64,6 +75,12 @@ public class Piece {
      */
     public boolean isKing() {
         return type.equals("king");
+    }
+
+    /** @return True if the piece is a pawn piece, else false.
+     */
+    public boolean isPawn() {
+        return type.equals("pawn");
     }
 
     /** @return True if this piece has captured another piece this turn

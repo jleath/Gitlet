@@ -1,6 +1,8 @@
 public class Board {
     private int boardSize = 8;
     private Piece[][] pieces;
+    private currentPlayer = "fire";
+    private boolean pieceMoved = false;
  
     /** Board Constructors
      *  @param shouldBeEmpty Represents whether a board is empty or not.
@@ -22,26 +24,38 @@ public class Board {
         this(false);
     }
 
-    //TODO
     /** Returns the piece located at board[x][y]. */
     public Piece pieceAt(int x, int y) {
-        return null;
+        return pieces[x][y];
     }
-    //TODO
+
     /** Places a Piece, P, at position (x, y) on the game board.
      *  If (x, y) is an invalid position, or P is null, does nothing.
      *  If P is already on the board, removes from its original position first.
      *  Will replace any existing piece at (x, y)
      */
     public void place(Piece p, int x, int y) {
-        return;
+        if (p == null || x < 0 || x >= boardSize || y < 0 || y >= boardSize)
+            return;
+        pieces[x][y] = p;
     }
+
     //TODO
     /** Removes the piece at position (x, y) from the game board and returns it.
      *  If (x, y) is an invalid position, returns null and alerts the user.
      */
     public Piece remove(int x, int y) {
-        return null;
+        if (x < 0 || x >= boardSize || y < 0 || y >= boardSize) {
+            System.out.println("Invalid position: (" + x + ", " + y + ")");
+            return null;
+        }
+        if (pieces[x][y] == null) {
+            System.out.println("No piece at position (" + x + ", " + y + ")");
+            return null;
+        }
+        Piece oldPiece = pieceAt(x, y);
+        pieces[x][y] = null;
+        return oldPiece;
     }
 
     /** Returns True if the starting piece at position (x, y) is a 
