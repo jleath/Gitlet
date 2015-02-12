@@ -4,11 +4,11 @@ import static org.junit.Assert.*;
  *  @author Josh Hug
  */
 
-public class SimpleTests {
+public class MisconceptionTests {
 
     @Test
     public void testCoreFunctionality() {
-        System.out.println("Test 1: See comments in SimpleTests.java for description.");
+        System.out.println("Test 1: See comments in MisconceptionTests.java for description.");
         Board b = new Board(true);
 
         // Place a shield at position 0, 0.
@@ -30,7 +30,7 @@ public class SimpleTests {
 
     @Test
     public void testThatSelectAndCanSelectDontCallEachOther() {
-        System.out.println("Test 2: See comments in SimpleTests.java for description.");
+        System.out.println("Test 2: See comments in MisconceptionTests.java for description.");
 
         SpyBoard b = new SpyBoard(true);
 
@@ -66,7 +66,7 @@ public class SimpleTests {
 
     @Test
     public void testThatSelectCallsMove() {
-        System.out.println("Test 3: See comments in SimpleTests.java for description.");
+        System.out.println("Test 3: See comments in MisconceptionTests.java for description.");
 
         Board b = new Board(true);
 
@@ -89,7 +89,7 @@ public class SimpleTests {
             " start by fixing test 1, then 2, and so on.");
         System.out.println("Due to JUnit limitations, they may run out of order.");
 
-        jh61b.junit.textui.runClasses(SimpleTests.class);      
+        jh61b.junit.textui.runClasses(MisconceptionTests.class);      
     }
 
     /* Special class that spies on your game. */
