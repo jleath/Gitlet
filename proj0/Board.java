@@ -1,8 +1,12 @@
 public class Board {
     private int boardSize = 8;
     private Piece[][] pieces;
-    private currentPlayer = "fire";
+    private boolean pieceSelected = false;
     private boolean pieceMoved = false;
+    private boolean pieceCaptured = false;
+    private int currentPlayer = 0;
+    private int selectedXPos;
+    private int selectedYPos;
  
     /** Board Constructors
      *  @param shouldBeEmpty Represents whether a board is empty or not.
@@ -24,6 +28,60 @@ public class Board {
         this(false);
     }
 
+    /** Returns whether or not the current player can end their turn. */
+    public boolean canEndTurn() {
+        return pieceMoved;
+    }
+
+    /** Ends the turn. Switches players, finishes capturing on the selected piece,
+     *  and sets all flags off.
+     */
+    public void endTurn() {
+        currentPlayer = (currentPlayer + 1) % 2;
+        pieceMoved = false;
+        pieceCaptured = false;
+        pieceSelected = false;
+        if (pieceAt(selectedXPos, selectedYPos) != null) {
+            pieceAt(selectedXPos, selectedYPos).doneCapturing();
+        }
+        System.out.println("Ended player " + currentPlayer + "'s turn");
+    }
+
+    /** Selects the square at (X, Y). */
+    public void select(int x, int y) {
+        if (pieceAt(x, y) == null) {
+            pieceAt(selectedXPos, selectedYPos).move(x, y);    
+            pieceMoved = true;
+        }
+        pieceSelected = true;
+        selectedXPos = x;
+        selectedYPos = y;
+    }
+
+    /** Returns true if the square at position (x, y) can be selected by
+     *  the current player, else false.
+     */
+    public boolean canSelect(int x, int y) {
+        Piece p = pieceAt(x, y);
+        if (p != null && !isPlayersPiece(p)) {
+            return false;
+        }
+        if (p != null) {
+            return pieceSelected == false || pieceMoved == false;
+        }
+        if (pieceSelected == false) {
+            return false;
+        }
+        if (pieceAt(selectedXPos, selectedYPos) != null && pieceAt(selectedXPos, selectedYPos).hasCaptured()) {
+            return isCaptureMove(selectedXPos, selectedYPos, x, y);
+        }
+        if (pieceMoved == false) {
+            return isValidMove(selectedXPos, selectedYPos, x, y) ||
+                   isCaptureMove(selectedXPos, selectedYPos, x, y);
+        }
+        return false;
+    }
+
     /** Returns the piece located at board[x][y]. */
     public Piece pieceAt(int x, int y) {
         return pieces[x][y];
@@ -40,7 +98,6 @@ public class Board {
         pieces[x][y] = p;
     }
 
-    //TODO
     /** Removes the piece at position (x, y) from the game board and returns it.
      *  If (x, y) is an invalid position, returns null and alerts the user.
      */
@@ -56,6 +113,53 @@ public class Board {
         Piece oldPiece = pieceAt(x, y);
         pieces[x][y] = null;
         return oldPiece;
+    }
+
+    /** Returns true if moving the piece at position XI, YI to XF, YF will result
+     *  in a piece being captured, else false.
+     */
+    private boolean isCaptureMove(int xi, int yi, int xf, int yf) {
+        if (correctDirection(xi, yi, xf, yf) && pieceAt(xf, yf) == null) {
+            int capturePosX = (int)((xi+xf) / 2);
+            int capturePosY = (int)((yi+yf) / 2);
+            Piece pieceToCapture = pieceAt(capturePosX, capturePosY);
+            return Math.abs(xi - xf) == 2 && Math.abs(yi - yf) == 2 &&
+                   pieceToCapture != null && pieceToCapture.side() != pieceAt(xi, yi).side();
+        } else {
+            return false;
+        }
+    }
+
+    /** Returns true if moving a piece from XI, YI to XF, YF is a move in the
+     *  correct direction.
+     */
+    private boolean correctDirection(int xi, int yi, int xf, int yf) {
+        if (pieceAt(xi, yi).isKing()) {
+            return true;
+        } else if (pieceAt(xi, yi).isFire()) {
+            return yf - yi > 0;
+        } else {
+            return yf - yi < 0;
+        }
+    }
+
+    /** Returns true if the move from position XI, YI to XF, YF is a valid move
+     *  else false.
+     */
+    private boolean isValidMove(int xi, int yi, int xf, int yf) {
+        Piece p = pieceAt(xi, yi);
+        if (correctDirection(xi, yi, xf, yf) && pieceAt(xf, yf) == null) {
+            return Math.abs(xi-xf) == 1 && Math.abs(yi-yf) == 1;
+        } else {
+            return false;
+        }
+        
+    }
+
+    /** Returns true if the piece, P is the current player's piece, else false.
+     */
+    private boolean isPlayersPiece(Piece p) {
+        return p.side() == currentPlayer;
     }
 
     /** Returns True if the starting piece at position (x, y) is a 
@@ -123,7 +227,7 @@ public class Board {
                 StdDrawPlus.setPenColor(StdDrawPlus.WHITE);
 
                 // Handle pieces
-                if (this.pieces[row][col] != null) {
+                if (pieces[row][col] != null) {
                     drawPiece(pieces[row][col], row, col);
                 }
             }
@@ -175,8 +279,24 @@ public class Board {
         StdDrawPlus.setYscale(0, gameBoard.size());
         while (true) {
             gameBoard.drawBoard();
-            // Handle other events
-            StdDrawPlus.show(1);
+            if (StdDrawPlus.mousePressed()) {
+                int x = (int)StdDrawPlus.mouseX();
+                int y = (int)StdDrawPlus.mouseY();
+                if (gameBoard.canSelect(x, y)) {
+                    gameBoard.select(x, y);
+                    StdDrawPlus.setPenColor(StdDrawPlus.WHITE);
+                    StdDrawPlus.filledSquare(x + .5, y + .5, .5);
+                    if (gameBoard.pieceAt(x, y) != null) {
+                        gameBoard.drawPiece(gameBoard.pieceAt(x, y), x, y);
+                    }
+                }
+            }
+            if (StdDrawPlus.isSpacePressed()) {
+                if (gameBoard.canEndTurn()) {
+                    gameBoard.endTurn();
+                }
+            }
+            StdDrawPlus.show(15);
         }
     }
 }

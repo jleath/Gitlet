@@ -16,6 +16,7 @@ public class Piece {
     int yPos;
     String type;
     boolean hasCaptured;
+    boolean isKinged = false;
     
     /** Piece constructor
      *  @param isFire Represents whether a piece is fire or rain.
@@ -31,6 +32,48 @@ public class Piece {
         yPos = y;
         this.type = type;
         hasCaptured = false;
+    }
+
+    /** Moves the piece to position (x, y).  Assumes the move is valid.
+     *  captures any intermediate piece if applicable.
+     */
+    public void move(int x, int y) {
+        if (Math.abs(y-yPos) == 2) {
+            int toRemoveX = (int)((xPos + x) / 2);
+            int toRemoveY = (int)((yPos + y) / 2);
+            board.remove(toRemoveX, toRemoveY);
+            hasCaptured = true;
+        }
+        board.place(this, x, y);
+        board.remove(xPos, yPos);
+        xPos = x;
+        yPos = y;
+        if ((isFire() && yPos == 7) || !isFire() && yPos == 0) {
+            isKinged = true;
+        }
+        if (this.isBomb() && hasCaptured == true) {
+            System.out.println("starting explosion.");
+            int lowX = xPos - 1;
+            int highX = xPos + 1;
+            int lowY = yPos - 1;
+            int highY = yPos + 1;
+
+            System.out.println("lowX =" + lowX);
+            System.out.println("highX =" + highX);
+            System.out.println("lowY =" + lowY);
+            System.out.println("highY =" + highY);
+
+            for (int row = lowX; row < 8 && row <= highX; row += 1) {
+                for (int col = lowY; col < 8 && col <= highY; col += 1) {
+                    System.out.println("Handling piece at (" + col + ", " + row + ").");
+                    if (board.pieceAt(col, row) != null &&
+                        board.pieceAt(col, row).side() != this.side() && 
+                        !board.pieceAt(col, row).isShield())
+                        board.remove(col, row);
+                }
+            }
+            board.remove(xPos, yPos);
+        }
     }
 
     /** Prints out the details of a piece.
@@ -74,7 +117,7 @@ public class Piece {
     /** @return True if the piece is a king piece, else false.
      */
     public boolean isKing() {
-        return type.equals("king");
+        return isKinged;
     }
 
     /** @return True if the piece is a pawn piece, else false.

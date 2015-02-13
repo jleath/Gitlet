@@ -19,6 +19,37 @@ public class TestBoard {
         assertTrue(p == null);
     }
 
+    /** Test the canEndTurn and endTurn methods. */
+    @Test
+    public void testCanEndTurnAndEndTurn() {
+        Board b = new Board(true);
+        Piece p = new Piece(true, b, 0, 0, "shield");
+        b.place(p, 0, 0);
+        assertFalse(b.canEndTurn());
+        b.select(0, 0);
+        b.select(1, 1);
+        assertTrue(b.canEndTurn());
+        b.endTurn();
+        assertFalse(b.canSelect(1, 1));
+    }
+
+    /** Test the select and move methods. */
+    @Test
+    public void testSelectAndMove() {
+        System.out.println("HERE");
+        Board b = new Board(true);
+        assertTrue(b.pieceAt(1, 1) == null);
+        Piece p = new Piece(true, b, 0, 0, "shield");
+        b.place(p, 0, 0);
+        assertTrue(b.canSelect(0, 0));
+        b.select(0, 0);
+        assertFalse(b.canSelect(4, 4));
+        assertTrue(b.canSelect(1, 1));
+        b.select(1, 1);
+        assertTrue(b.pieceAt(1, 1) != null);
+        assertFalse(b.canSelect(2, 2));
+    }
+
     /** Test the place method. */
     @Test
     public void testPlace() {
@@ -45,6 +76,16 @@ public class TestBoard {
         assertTrue(b.remove(0, 0) == null);
         assertTrue(b.remove(8, 10) == null);
     }
+
+    /** Test the canSelect method. */
+    @Test
+    public void testCanSelect() {
+        Board b = new Board();
+        assertTrue(b.canSelect(0, 0));
+        b = new Board(true);
+        assertFalse(b.canSelect(0, 0));
+    }
+
     
     /** Run the tests for the Board class. */ 
     public static void main(String[] args) {
