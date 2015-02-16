@@ -67,6 +67,9 @@ public class SortedComparableList {
      *  remains. No two consecutive items in this list are equals at the
      *  end of this method.
      *
+     *  You can assume the list is in sorted order when this method is
+     *  called.
+     *
      *  For example, if the input list is [ 0 0 0 0 1 1 3 3 3 4 ], the
      *  output list is [ 0 1 3 4 ].
      **/
@@ -76,6 +79,9 @@ public class SortedComparableList {
 
     /** Duplicates each Comparable so that for every original
      *  Comparable, there will end up being two consecutive Comparables.
+     *
+     *  You can assume the list is in sorted order when this method is
+     *  called.
      *
      *  For example, if the input list is [ 2 3 4 7 ], the
      *  output list is [ 2 2 3 3 4 4 7 7 ].
