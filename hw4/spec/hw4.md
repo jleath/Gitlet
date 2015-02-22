@@ -5,8 +5,8 @@ Table of Contents
 ----------------
 
 - [Introduction](#introduction)
-- [Task 1:  RingBufferInterface](#interface)
-- [Task 2:  AbstractRingBuffer](#abstract)
+- [Task 1:  BoundedQueue](#interface)
+- [Task 2:  AbstractBoundedQueue](#abstract)
 - [Task 3:  ArrayRingBuffer](#array)
 - [Task 4:  GuitarString](#string)
 
@@ -69,7 +69,7 @@ Of course, your `BoundedQueue.java` file won't actually do anything (since it's 
 Make sure to decare this interface as part of the `synthesizer` package.  The syntax for declaring yourself to be part of a package is `package <packagename>;`.  For example, if you are part of
 the `animal` package, the top of your file should have a `package animal;` line.
 
-Before moving on, ensure that  `BoundedQueue` compiles: `javac -g RingBufferInterface.java`. 
+Before moving on, ensure that  `BoundedQueue` compiles: `javac -g BoundedQueue.java`. 
 
 If you're stuck, see [this lecture 11 .java file](https://github.com/Berkeley-CS61B/lectureCode/blob/f69ce3e6ab9045ec3e279ba3099f75d656916853/lec11/live2/MaxComparable/OurComparable.java) for an example of an interface declaration.
 
