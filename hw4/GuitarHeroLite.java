@@ -1,4 +1,4 @@
-// A client that uses the synthesizer package to relpicate a plucked guitar string sound
+// A client that uses the synthesizer package to replicate a plucked guitar string sound
 public class GuitarHeroLite {
       public static void main(String[] args) {
 
