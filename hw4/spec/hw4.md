@@ -23,7 +23,7 @@ The synthesizer package has four components:
 - `BoundedQueue`, an interface which declares all the methods that must be implemented by any class that implements `BoundedQueue`.
 - `AbstractBoundedQueue`, an abstract class which implements `AbstractBoundedQueue`, capturing the redundancies between methods in `BoundedQueue`.
 - `ArrayRingBuffer`, a class which extends `AbstractBoundedQueue` and uses a `double[]` as the actual implementation of the `BoundedQueue`.
-- `GuitarString`, which uses an `ArrayRingBuffer` to enqueue and dequeue sounds to create synthesize a guitar string sound.
+- `GuitarString`, which uses an `ArrayRingBuffer` to implement the [Karplus-Strong algorithm](http://en.wikipedia.org/wiki/Karplus%E2%80%93Strong_string_synthesis) to synthesize a guitar string sound.
 
 We've provided you with skeleton code for `ArrayRingBuffer` and `GuitarString`, but you'll need to implement the other two .java files from scratch. In this HW, we'll work our way down the hierarchy from most abstract to most concrete.
 
@@ -44,13 +44,13 @@ We will start by defining a BoundedQueue class. The BoundedQueue acts like a [li
 
 Create a file `BoundedQueue.java` in the synthesizer folder.  Your BoundedQueue interface should contain the following public abstract methods:
 
-    int capacity()                // return size of the buffer
-    int fillCount()               // return number of items currently in the buffer
-    boolean isEmpty()             // is the buffer empty (fillCount equals zero)?
-    boolean isFull()              // is the buffer full (fillCount is same as capacity)?
-    void enqueue(double x)        // add item x to the end
-    double dequeue()              // delete and return item from the front
-    double peek()                 // return (but do not delete) item from the front
+    int capacity();          // return size of the buffer
+    int fillCount();         // return number of items currently in the buffer
+    boolean isEmpty();       // is the buffer empty (fillCount equals zero)?
+    boolean isFull();        // is the buffer full (fillCount is same as capacity)?
+    void enqueue(double x);  // add item x to the end
+    double dequeue();        // delete and return item from the front
+    double peek();           // return (but do not delete) item from the front
 
 For example, given an empty BoundedQueue of capacity 4, the state of the queue after each operation is shown below:
 
@@ -64,12 +64,12 @@ For example, given an empty BoundedQueue of capacity 4, the state of the queue a
     dequeue()       // 15.1 31.2  -3.1       (returns 9.3)
     peek()          // 15.1 31.2  -3.1       (returns 15.1)
 
-Of course, your `BoundedQueue` won't do any of this implementing, but it will define the contract that any `BoundedQueue` must follow.
+Of course, your `BoundedQueue.java` file won't actually do anything (since it's an interface), but it will define the contract that any `BoundedQueue` must follow.
 
-Make sure to decare this class as part of the `synthesizer` package.  The syntax for declaring yourself to be part of a package is `package <packagename>;`.  For example, if you are part of
+Make sure to decare this interface as part of the `synthesizer` package.  The syntax for declaring yourself to be part of a package is `package <packagename>;`.  For example, if you are part of
 the `animal` package, the top of your file should have a `package animal;` line.
 
-Before moving on, enusre that  `BoundedQueue` compiles: `javac -g RingBufferInterface.java`. 
+Before moving on, ensure that  `BoundedQueue` compiles: `javac -g RingBufferInterface.java`. 
 
 If you're stuck, see [this lecture 11 .java file](https://github.com/Berkeley-CS61B/lectureCode/blob/f69ce3e6ab9045ec3e279ba3099f75d656916853/lec11/live2/MaxComparable/OurComparable.java) for an example of an interface declaration.
 
@@ -78,7 +78,7 @@ If you're stuck, see [this lecture 11 .java file](https://github.com/Berkeley-CS
 
 #### Review: What is an Abstract Class?  Why would you want one?
 
-Methods and classes can be declared as abstract using the abstract keyword. Abstract classes cannot be instantiated, but they can be subclassed. In 61B, we'll almost always use abstract classes as implementations for interfaces, though they can be used for other reasons as well. 
+Methods and classes can be declared as abstract using the abstract keyword. Abstract classes cannot be instantiated, but they can be subclassed using the `extends` keyword. In 61B, we'll almost always use abstract classes as default implementations for interfaces, though they can be used for other reasons as well. 
 
 Abstract classes that implement interfaces will inherit all of the abstract methods from that interface. If a class includes any abstract methods (including any inherited methods), then the class itself must be declared abstract, as in:
 
@@ -88,9 +88,9 @@ As an aside, it is also possible to declare additional abstract methods. To do s
 
     abstract void moveTo(double deltaX, double deltaY);
 
-We won't explicitly define any methods as abstract in HW4, but we will see this idea in this week's lab.
+We won't explicitly define any methods as abstract in HW4, but we will see this idea in lab 6.
 
-When an abstract class is subclassed by a non-abstract class (e.g. ArrayList subclasses AbstractList), the subclass must provide implementations for all of the abstract methods in its parent class. 
+When an abstract class is subclassed by a non-abstract class (e.g. ArrayList subclasses AbstractList), the subclass must provide implementations for all of the abstract methods in its parent class or else they won't compile. 
 
 #### Your Task
 
@@ -108,9 +108,9 @@ Create a new abstract class in a .java file called `AbstractBoundedQueue.java` t
 
 Note that `peek`, `dequeue`, and `enqueue` are inherited from RingBuffer, so you do not need to declare these explicitly.
 
-If you're stuck, see [this lecture 10 .java file](https://github.com/Berkeley-CS61B/lectureCode/blob/master/lec10/live2/AbstractXList.java) for an example of an abstract class that provides default methods for an interface.
+If you're stuck, see [AbstractXList from lecture 10](https://github.com/Berkeley-CS61B/lectureCode/blob/master/lec10/live2/AbstractXList.java) for an example of an abstract class that provides default methods for an interface. This class provides a default implementation for the [XList class](https://github.com/Berkeley-CS61B/lectureCode/blob/master/lec10/live2/XList.java).
 
-If you're having trouble compiling your `AbstractBoundedQueue.java` file, try compiling with:
+If you're having trouble compiling your `AbstractBoundedQueue.java` file, because the compiler can't find `BoundedQueue.class`, try compiling with:
 
     javac BoundedQueue.java AbstractBoundedQueue.java
 
@@ -118,16 +118,18 @@ or if you want to compile ALL java files in a folder, you can just do:
 
     javac *.java
 
+This is a minor quirk in the way the javac compiler behaves when compiling from inside package directories.
+
 ####  Side note: When to Use a Interface versus Abstract Class
-In practice, in can be a little unclear when to use an interface and when to use an abstract class.  One mostly honest metaphor is that you can think of an interface as defining a "can-do" relationship, whereas an abstract class defines an "is-a" relationship.  The difference can be subtle, and you can often use one instead of the other.  In practice, a well-designed Java library will have a hierarchy of interfaces, which are extended by abstract classes that provided default implementations for some methods, and which are in turn ultimately implemented by concrete classes.  A good example is the Collection interface:  It extends Iterable (which is its superinterface), and is implemented by many subinterfaces (i.e. List, Set, Map), which in turn have their own abstract implementations (AbstractList, AbstractSet AbstractMap).  However, for smaller programs, the hierarchy is often stubbier, sometimes starting with an abstract class. For example, we could have just started with AbstractBoundedQueue and skipped BoundedQueue altogether.
+In practice, in can be a little unclear when to use an interface and when to use an abstract class.  One mostly accurate metaphor that might help is that you can think of an interface as defining a "can-do" relationship, whereas an abstract class defines an "is-a" relationship.  The difference can be subtle, and you can often use one instead of the other.  In practice, a well-designed Java library will have a hierarchy of interfaces, which are extended by abstract classes that provided default implementations for some methods, and which are in turn ultimately implemented by concrete classes.  A good example is the Collection interface:  It extends Iterable (which is its superinterface), and is implemented by many subinterfaces (i.e. List, Set, Map), which in turn have their own abstract implementations (AbstractList, AbstractSet AbstractMap).  However, for smaller programs, the hierarchy is often stubbier, sometimes starting with an abstract class. For example, we could have just started with AbstractBoundedQueue and skipped BoundedQueue altogether.
 
 <a name="array"></a>  Task 3:  ArrayRingBuffer
 --------------------------------
 
-The ArrayRingBuffer class will do all the real work by extending `AbstractBoundedQueue`. That means we can happily inherit `capacity()`, `fillCount()`, `isEmpty()`, and `isFull()`,
+The `ArrayRingBuffer` class will do all the real work by extending `AbstractBoundedQueue`. That means we can happily inherit `capacity()`, `fillCount()`, `isEmpty()`, and `isFull()`,
 but we need to implement all of the the abstract methods. In this part, you'll fill out `ArrayRingBuffer.java`. You'll need to rename the file from `ArrayRingBuffer.java.skeleton` to `ArrayRingBuffer.java`.
 
-A naive array implementation of a BoundedQueue would store the newest item at position 0, the second newest item in position 1, and so forth. This is an efficient approach, as we see in the example below, where the comments show entries 0, 1, 2, and 3 of the array respectively.
+A naive array implementation of a BoundedQueue would store the newest item at position 0, the second newest item in position 1, and so forth. This is an inefficient approach, as we see in the example below, where the comments show entries 0, 1, 2, and 3 of the array respectively. We assume that the array is initializer to zero.
 
     BoundedQueue x = new NaiveArrayBoundedQueue(4);
     x.enqueue(33.1) // 33.1    0    0    0
@@ -136,8 +138,7 @@ A naive array implementation of a BoundedQueue would store the newest item at po
     x.enqueue(-3.4) // 33.1 44.8 62.3 -3.4
     x.dequeue()     // 44.8 62.3 -3.4    0 (returns 33.1)
 
-Note that this last call is slow as it requires moving every single item to the left. For larger arrays this would get uch worse.
-spot to get the desired array [44.8, 62.3, ..., 194.4].
+Note that the call to `dequeue` is very slowas it requires moving every single item to the left. For larger arrays this would result in unacceptable performance.
 
 The ArrayRingBuffer will improve this runtime substantially by using the 'ring buffer' data structure. A ring buffer first starts empty and of some predefined length. For example, this is a 7-element buffer:
 
@@ -147,11 +148,11 @@ Assume that a 1 is written into the middle of the buffer (exact starting locatio
 
 ![one item](http://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Circular_buffer_-_XX1XXXX.svg/500px-Circular_buffer_-_XX1XXXX.svg.png)
 
-Then assume that two more elements are added — 2 & 3 — which get appended after the 1:
+Then assume that two more elements are added — 2 & 3 — which get appended after the 1. Here, it is important that the 2 and 3 are placed in the exact order and places shown:
 
 ![three items](http://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Circular_buffer_-_XX123XX.svg/500px-Circular_buffer_-_XX123XX.svg.png)
 
-If two elements are then removed from the buffer, the oldest values inside the buffer are removed. The two elements removed, in this case, are 1 & 2, leaving the buffer with just a 3:
+If two elements are then removed from the buffer, the oldest two values inside the buffer are removed. The two elements removed, in this case, are 1 & 2, leaving the buffer with just a 3:
 
 ![one item again](http://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Circular_buffer_-_XXXX3XX.svg/500px-Circular_buffer_-_XXXX3XX.svg.png)
 
@@ -159,22 +160,24 @@ If we then enqueue 4, 5, 6, 7, 8, 9, the ring buffer is now as shown below:
 
 ![full](http://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Circular_buffer_-_6789345.svg/500px-Circular_buffer_-_6789345.svg.png)
 
-Note that the 6 was enqueued at the leftmost entry of the array (i.e. the buffer wraps around, like a ring). At this point, the ring buffer is full, and if another enqueue() is performed, then an Exception will occur. You will manually throw this exception. These will be covered Monday in class, so if you're starting earlier than Monday, you'll need to either wait or read about exceptions in HFJ.
+Note that the 6 was enqueued at the leftmost entry of the array (i.e. the buffer wraps around, like a ring). At this point, the ring buffer is full, and if another enqueue() is performed, then an Exception will occur. You will manually throw this Exception. These will be covered Monday in class, so if you're starting earlier than Monday, you'll need to either wait or read ahead about exceptions in HFJ.
 
-We recommend you maintain one integer instance variable `first` that stores the index of the least recently inserted item; maintain a second integer instance variable `last` that stores the index one beyond the most recently inserted item. To insert an item, put it at index `last` and increment `last`. To remove an item, take it from index `first` and increment `first`. When either index equals capacity, make it wrap-around by changing the index to 0.
+We recommend you maintain one integer instance variable `first` that stores the index of the least recently inserted item; maintain a second integer instance variable `last` that stores the index one beyond the most recently inserted item. To insert an item, put it at index `last` and increment `last`. To remove an item, take it from index `first` and increment `first`. When either index equals capacity, make it wrap-around by changing the index to 0. Our skeleton file provides starter code along these lines. You're welcome to do something else if you'd like, since these variables are private and thus our tester will not be able to see them anyway.
 
-Implement RingBuffer to throw a run-time exception if the client attempts to `enqueue()` into a full buffer or call `dequeue()` or `peek()` on an empty buffer. Again, we'll be covering exceptions on Monday, so hold off until then (or read ahead).
+Implement RingBuffer to throw a run-time exception if the client attempts to `enqueue()` into a full buffer or call `dequeue()` or `peek()` on an empty buffer. Again, we'll be covering exceptions on Monday, so hold off until then (or read ahead in HFJ).
 
-Once you've fleshed out the TODOs, make sure `ArrayRingBuffer` compiles before moving on. Make sure to write a `TestArrayRingBuffer` class (either before or after your write `ArrayRingBuffer`). `TestArrayRingBuffer.java` will not be graded. 
+Once you've fleshed out the TODOs, make sure `ArrayRingBuffer` compiles before moving on. Make sure to add tests `TestArrayRingBuffer` class (either before or after your write `ArrayRingBuffer`). `TestArrayRingBuffer.java` will not be graded. To run TestArrayRingBuffer you'll need to run the following command from your hw4 folder as described in this [common package gotchas slide](https://docs.google.com/presentation/d/1gqOPEcnJ16ILEylpfIPITDacZZzs862DtUmGG_Aqql0/pub?start=false&loop=false&delayms=3000&slide=id.g7a41441c3_1155).
+
+    java synthesizer.TestArrayRingBuffer
 
 While we're at it, here's a new rule: You're now welcome to share test code for HW and lab. You should continue to not sure test code for projects. Feel free to put tests up on Piazza for this HW in the HW4 thread.
 
 <a name="string"></a>  Task 4:  Finishing up the Package
 --------------------------------
 
-Finally, we want to flesh out `GuitarString`, which uses an `ArrayRingBuffer` to replicate the sound of a plucked string!  We'll be using the Karplus-Strong algorithm, which is quite easy to implement with a BoundedQueue.
+Finally, we want to flesh out `GuitarString`, which uses an `ArrayRingBuffer` to replicate the sound of a plucked string. We'll be using the Karplus-Strong algorithm, which is quite easy to implement with a BoundedQueue.
 
-The Karplus-Algorithm is simply the following three steps
+The Karplus-Algorithm is simply the following three steps:
  
  1. Replace every item in a BoundedQueue with random noise (double values between -0.5 and 0.5).
  2. Remove the front double in the BoundedQueue and average it with the next double in the BQ (hint: use `dequeue()` and `peek()`) multiplied by an energy decay factor of 0.996. 
@@ -184,11 +187,13 @@ Or visually, if the BoundedQueue is as shown on the top, we'd dequeue the 0.2, c
 
 ![karplus-strong](karplus-strong.png)
 
-You can play a double value with the StdDraw.play() method. For example StdDraw.play(0.333) will tell the diaphragm of your speaker to extend itself to 1/3rd of its total reach, StdDraw.play(-0.9) will tell it to stretch its little heart backwards almost as far as it can reach. Movement of the speaker diaphragm displaces air, and if you displace air in nice patterns, these disruptions will be intepreted by your consciousness as pleasing thanks to billions of years of evolution. See [this page](http://electronics.howstuffworks.com/speaker6.htm) for more. If you simply do StdDraw.play(0.9) and never play anything again, the diaphragm shown in the image would just be sitting still 9/10ths of the way forwards.
+You can play a double value with the StdAudio.play() method. For example StdAudio.play(0.333) will tell the diaphragm of your speaker to extend itself to 1/3rd of its total reach, StdAudio.play(-0.9) will tell it to stretch its little heart backwards almost as far as it can reach. Movement of the speaker diaphragm displaces air, and if you displace air in nice patterns, these disruptions will be intepreted by your consciousness as pleasing thanks to billions of years of evolution. See [this page](http://electronics.howstuffworks.com/speaker6.htm) for more. If you simply do StdAudio.play(0.9) and never play anything again, the diaphragm shown in the image would just be sitting still 9/10ths of the way forwards.
 
 Rename `GuitarString.java.skeleton` to `GuitarString.java`. Complete 'GuitarString.java' so that it implements the Karplus-Strong algorithm. 
 
-Once you're relatively comfortable that GuitarString should be working (perhaps through the use of tests), try compiling and running 'GuitarHeroLite'. It will provide an interface, allowing the user to play sounds using the `synthesizer` package's `GuitarString` class.
+The provided `TestGuitarString` class provides a sample test `testPluckTheAString` that attempts to play an A-note on a guitar string. You should hear an A-note when you run this test. If you don't, you should consider writing finer grained tests that inspect quantiative behavior of the the class. 
+
+Once you're relatively comfortable that GuitarString should be working, try compiling and running 'GuitarHeroLite'. It will provide an interface, allowing the user to interactively play sounds using the `synthesizer` package's `GuitarString` class.
 
 When you run `GuitarHeroLite`, it will open a Standard Draw window. Click on the window, and press "a" or "c".  These should play two different guitar string sounds for you. This is just the sound of a double dequeuing repeatedly. It is like magic.
 
@@ -199,7 +204,7 @@ Write a program GuitarHero that is similar to GuitarHeroLite, but supports a tot
 
     String keyboard = "q2we4r5ty7u8i9op-[=zxdcfvgbnjmk,.;/' ";
 
-This keyboard arrangement imitates a piano keyboard: The "white keys" are on the qwerty and zxcv rows and the "black keys" on the 12345 and asdf rows of the keyboard.
+This keyboard arrangement imitates a piano keyboard: The "white keys" are on the qwerty and zxcv rows and the "black keys" on the 12345 and asdf rows of the keyboard. 
 
 The ith character of the string keyboard corresponds to a frequency of 440 × 2(i - 24) / 12, so that the character 'q' is 110Hz, 'i' is 220Hz, 'v' is 440Hz, and ' ' is 880Hz. Don't even think of including 37 individual GuitarString variables or a 37-way if statement! Instead, create an array of 37 GuitarString objects and use keyboard.indexOf(key) to figure out which key was typed. Make sure your program does not crash if a key is pressed that does not correspond to one of your 37 notes.
 
