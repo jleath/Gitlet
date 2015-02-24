@@ -5,6 +5,10 @@
 *.jpg
 *.bz2
 *.tar
+*.gif
+*.html
+*.css
+javadocs
 
 # Proj1 files that we REALLY don't want them to upload! #
 synsets.txt
