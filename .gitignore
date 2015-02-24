@@ -1,4 +1,16 @@
 *.class
+*.zip
+*.png
+*.bmp
+*.jpg
+*.bz2
+*.tar
+
+# Proj1 files that we REALLY don't want them to upload! #
+synsets.txt
+hypernyms.txt
+hyponyms1000-subgraph.txt
+synsets1000-subgraph.txt
 
 # OS generated files #
 ######################
