@@ -339,3 +339,8 @@ Note: The sudden dropoff that you observe at the far right of your plots is almo
 There are endless possibilities for exploration. If you decide to add additional functionality, place your additional functions in a package called ngordnet.extra. Feel free to add additional commands in your NgordnetUI that take advantage of these functions in ngordnet.extra.
 
 Please post anything cool that you uncover on Piazza. 
+
+
+Acknowledgements
+=====
+The WordNet part of this assignment is adapted from Alina Ene and Kevin Wayne's [Wordnet assignment](http://www.cs.princeton.edu/courses/archive/fall14/cos226/assignments/wordnet.html) at Princeton University.
