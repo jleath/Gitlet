@@ -33,6 +33,10 @@ Part of the grade for this project will include following the [course style guid
 
 	$ python /Users/jug/work/61b/course-materials/lib/style61b.py \*.java
 
+There are no secret tests for the style checker, though we reserve the right to grade you holistically on your overall code composition. 
+
+Similarly, time permitting, we will be allocating a small portion of your grade to the thoroughness of your JUnit tests. We hope that we've convinced you that tests are easy to write and can save you a ton of time if done properly. 
+
 **While reading this spec, don't start coding until we tell you to. If you jump in early, you're likely to go down the wrong path. The spec and supporting files should be your first source of information and you should consult this document before seeking outside help.**
 
 
