@@ -31,7 +31,7 @@ To get started, use the ever fun to type ```git pull skeleton master```. You'll 
 
 Part of the grade for this project will include following the [course style guidelines](http://berkeley-cs61b.github.io/public_html/materials/guides/style-guide.html). As noted, you should not try to read these rules, though they may be a useful reference. It will be much easier to simply run the style checker. You can do this by running the style61b.py script provided in the lib folder (you may need to pull from skeleton again if you don't see it). For example, on my machine, I can run it as follows.
 
-	$ python /Users/jug/work/61b/course-materials/lib/style61b.py \*.java
+    $ python /Users/jug/work/61b/course-materials/lib/style61b.py \*.java
 
 There are no secret tests for the style checker, though we reserve the right to grade you holistically on your overall code composition. 
 
@@ -84,7 +84,7 @@ Your first task in this assignment is to read in the provided synset and hyperny
 Note that the Digraph class requires us to know the number of vertices in advance, and only allows us to add edges based on a vertex number, e.g. the following desirable code wouldn't work:
 
     Digraph g = new Digraph(100);
-	 // Code below is invalid. addEdge accepts only ints.
+     // Code below is invalid. addEdge accepts only ints.
     g.addEdge("dash sprint", "run running");
     g.addEdge("locomotion travel", "motion movement move");
 
@@ -206,8 +206,8 @@ Most significantly, the NGramMap class will provides methods to look up a TimeSe
     NGramMap ngm = new NGramMap("./ngrams/all_words", 
                                 "./ngrams/total_counts.csv");
 
-	TimeSeries<Double> fishWeight = ngm.weightHistory("fish", 1850, 1933);
-	
+    TimeSeries<Double> fishWeight = ngm.weightHistory("fish", 1850, 1933);
+    
 In this part of the assignment (part 5), you will add the following methods to NGramMap:
 
  - countInYear(String word, int year): Returns count of word for the given year.
@@ -281,16 +281,16 @@ In this part, you'll create a UI with the following commands:
 
 For example, after the following commands, the following outputs should be printed and the following plots should be generated.
 
-	$ java ngordnet.NgordnetUI ./ngrams
-	> count cake 1995
-	76471
-	> hyponyms teenager
-	[rocker, chebab, teen, adolescent, pachuco, mod, teenager, punk, stripling]
-	> history cake
-	> range 1900 1930
-	> history cake pie
-	> range 1900 2000
-	> hypohist dog cat
+    $ java ngordnet.NgordnetUI ./ngrams
+    > count cake 1995
+    76471
+    > hyponyms teenager
+    [rocker, chebab, teen, adolescent, pachuco, mod, teenager, punk, stripling]
+    > history cake
+    > range 1900 1930
+    > history cake pie
+    > range 1900 2000
+    > hypohist dog cat
 
 ![cake.png](cake.png)
 ![cake-pie.png](cake-pie.png)
