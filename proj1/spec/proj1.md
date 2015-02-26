@@ -9,10 +9,11 @@ Key things we'll investigate:
 
  - The relative popularity of words over time.
  - The relative popularity of categories of words over time.
+ - The hypnoyms (see below) of a given word.
  - The length of words.
  - Zipf's law.
 
-To support these investigations, you will write a new package from scratch called ngorndnet that contains the following classes:
+To support these investigations, you will write a new package almost from scratch called Ngordnet that contains the following classes:
 
     public class WordNet
     public class TimeSeries<T extends Number> extends TreeMap<Integer, T>
@@ -20,17 +21,17 @@ To support these investigations, you will write a new package from scratch calle
     public class NGramMap
     public class WordLengthProcessor implements YearlyRecordProcessor
     public class Plotter
-    public class NgrordnetUI (maybe provided)
+    public class NgrordnetUI
     Test classes for the classes above.
     Any additional public classes you'd like.
 
 Along the way we'll get lots of experience with different useful data structures. The full technical specification for the ngordnet package can be found [here](add java docs). Below follows a description of each class. You can go in any order you choose, but we recommend that you work through the project in the order given in this document.
 
-To get started, use the ever fun to type ```git pull skeleton master```. You'll also need to download the project 1 datafiles (not provided via github for space reasons). You can find them [at this link](http://www.cs.berkeley.edu/~hug/p1data.zip). You should unzip these into the proj1 directory. Note that we've set up [.gitignore](https://help.github.com/articles/ignoring-files/) files so that git will avoid uploading these data files. This is intentional. Uploading these files to github will result in a lot of headaches for everybody, so please don't mess with the .gitignore files. If you need to work on multiple machines, you should download the zip file once for each machine.
+To get started, use the ever fun to type ```git pull skeleton master```. You'll also need to download the project 1 datafiles (not provided via github for space reasons). You can find them [at this link](http://www.cs.berkeley.edu/~hug/p1data.zip). You should unzip these into the proj1 directory. Note that we've set up hidden [.gitignore](https://help.github.com/articles/ignoring-files/) files in the skeleton code so that git will avoid uploading these data files. This is intentional. Uploading these files to github will result in a lot of headaches for everybody, so please don't mess with the .gitignore files. If you need to work on multiple machines, you should download the zip file once for each machine.
 
 Part of the grade for this project will include following the [course style guidelines](http://berkeley-cs61b.github.io/public_html/materials/guides/style-guide.html). As noted, you should not try to read these rules, though they may be a useful reference. It will be much easier to simply run the style checker. You can do this by running the style61b.py script provided in the lib folder (you may need to pull from skeleton again if you don't see it). For example, on my machine, I can run it as follows.
 
-	$ python /Users/jug/work/61b/course-materials/lib/style61b.py *.java
+	$ python /Users/jug/work/61b/course-materials/lib/style61b.py \*.java
 
 **While reading this spec, don't start coding until we tell you to. If you jump in early, you're likely to go down the wrong path. The spec and supporting files should be your first source of information and you should consult this document before seeking outside help.**
 
@@ -267,6 +268,7 @@ For this part, complete every method except ```plotProcessedHistory``` and ```pl
 In this part, you'll create a UI with the following commands:
  
  - quit: program exits
+ - help: Provides a list of commands.
  - range [start] [end]: resets the start and end years to the values provided.
  - count [word] [year]: print the count of word in the given year.
  - hyponyms [word]: prints all hyponyms of the given word separated by spaces.
@@ -307,9 +309,9 @@ You'll then add the processedHistory methods to [NGramMap](javadocs/index.html?n
 
 Finally, add the command below to NgordnetUI.
 
-    wordlength: plots the length of the average word from start to end
+    wordlength: plots the length of the average word from start to end.
 
-Try it out and see if the results surprise you.
+Try it out and see if the results surprise you. If you see any obviously incorrect glitches, recall that ints can only reach 2 billion before overflowing.
 
 9: Zipf's Law
 =====
