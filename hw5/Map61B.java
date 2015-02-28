@@ -31,7 +31,7 @@ public interface Map61B<K, V> {
 
     /* Removes the entry for the specified key only if it is currently mapped to
      * the specified value. Not required for HW5. */
-    public V remove(K key, K value);
+    public V remove(K key, V value);
 
     /* Returns a Set view of the keys contained in this map. Not required for HW5. */
     public Set<K> keySet();    
