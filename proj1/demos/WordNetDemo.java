@@ -12,7 +12,7 @@ public class WordNetDemo {
         System.out.println(wn.isNoun("leap"));
         System.out.println(wn.isNoun("nasal_decongestant"));
 
-        /* The code below should print the following: 
+        /* The code below should print the following (maybe not in this order): 
             All nouns:
             augmentation
             nasal_decongestant
@@ -33,7 +33,7 @@ public class WordNetDemo {
             System.out.println(noun);
         }
 
-        /* The code below should print the following: 
+        /* The code below should print the following (maybe not in this order): 
             Hypnoyms of increase:
             augmentation
             increase
@@ -45,5 +45,17 @@ public class WordNetDemo {
         for (String noun : wn.hyponyms("increase")) {
             System.out.println(noun);
         }
+
+        /* The code below should print the following (maybe not in this order): 
+            Hypnoyms of jump:
+            parachuting
+            leap
+            jump
+        */
+
+        System.out.println("Hypnoyms of jump:");
+        for (String noun : wn.hyponyms("jump")) {
+            System.out.println(noun);
+        }        
     }    
 } 
