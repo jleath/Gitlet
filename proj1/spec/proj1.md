@@ -119,9 +119,9 @@ Check out WordNetDemo.java in the demos folder. This provides examples of how th
 
 Once you've checked out the demo, you'll want to pick the ADTs that you want to use to support the desired operations. This will be somewhat similar to what you did in the week 6 discussion, namely using somewhat unfamiliar ADTs to solve a real world problem. It wouldn't be a bad idea to [review the week 6 discussion worksheet before proceeding](http://berkeley-cs61b.github.io/public_html/materials/discussion/discussion6.pdf).
 
-You're allowed to discuss designs with other students, **but we request that you do not post exact instance variable declarations on Piazza (e.g. if you decide you want to use a List\<TreeSet\<Integer\>\>, please don't post this variable declaration on Piazza)**. We want everyone to give this some real thought. Despite these admonitions, sharing ideas (or even instance variables) will not be considered plagiarism. As always, cite any help that you receive from others.
+You're allowed to discuss designs with other students, **but we request that you do not post exact instance variable declarations on Piazza (e.g. if you decide you want to use a `List<TreeSet<Integer>>`, please don't post this variable declaration on Piazza)**. We want everyone to give this some real thought. Despite these admonitions, sharing ideas (or even instance variables) will not be considered plagiarism. As always, cite any help that you receive from others.
 
-To see the exact API that you must follow for WordNet, see the [WordNet javadocs](javadocs/index.html?ngordnet/WordNet.html). Make sure to take advantage of the MethodSignatures file provided with the skeleton. **You may not add additional public or protected methods to WordNet.java or any other required files in this project. You may add additional package protected or private methods as you please. You may add additional public classes (with public methods).**
+To see the exact API that you must follow for WordNet, see the [WordNet javadocs](javadocs/index.html?ngordnet/WordNet.html). Make sure to take advantage of the MethodSignatures file provided with the skeleton. **You may not add additional public or protected methods to WordNet.java or any other required files in this project. You may add additional package protected or private methods as you please. You may add additional public classes (with public methods).** There are no restrictions on the libraries that you use. Note that if you want to use something from the Princeton Standard library, you'll need to import it (since your Ngordnet code is not part of the anonymous package). You can import `In`, for example, using `import edu.princeton.cs.introcs.In;`.
 
 See the demos/GraphDemo.java file for an example using the Digraph class. 
 
@@ -155,12 +155,12 @@ For example, the following code would create a TimeSeries<Double> and associate 
 
 The TimeSeries class will also provide additional utility methods:
 
- - years(): Returns all years as a Collection\<Number\>
- - data(): Returns all data as a Collection\<Number\>
+ - years(): Returns all years as a `Collection<Number>`
+ - data(): Returns all data as a `Collection<Number>`
  - plus(TimeSeries x): Returns the yearwise sum of x and this.
  - dividedBy(TimeSeries x): Returns the yearwise quotient of this and x.
 
-Our ultimate goal is to make usage of the xChart plotting library easy. Since xChart expects data in Collection\<Number\> form, it is natural for our TimeSeries class to provide utility methods to generate such Collections.
+Our ultimate goal is to make usage of the xChart plotting library easy. Since xChart expects data in `Collection<Number>` form, it is natural for our TimeSeries class to provide utility methods to generate such Collections.
 
 As throughout this assignment, the MethodSignatures file provided in the skeleton gives the exact class definition and signatures that you'll need. Likewise, see the TimeSeriesDemo class for a more thorough example of the behavior of the class. See the [TimeSeries javadocs](javadocs/index.html?ngordnet/TimeSeries.html) for a more detailed technical specification of your class.
 

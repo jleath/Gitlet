@@ -26,7 +26,8 @@ public class TimeSeries<T extends Number> extends TreeMap<Integer, T> {
       * to implement it if you don't want to. */
     private NavigableSet<Integer> validYears(int startYear, int endYear)
 
-    /** Creates a copy of TS, but only between STARTYEAR and ENDYEAR. */
+    /** Creates a copy of TS, but only between STARTYEAR and ENDYEAR. 
+     * inclusive of both end points. */
     public TimeSeries(TimeSeries<T> ts, int startYear, int endYear)
 
     /** Creates a copy of TS. */
