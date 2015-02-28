@@ -214,8 +214,8 @@ In this part of the assignment (part 5), you will add the following methods to N
  - getRecord(int year): Returns YearlyRecord for year.
  - countHistory(String word): Returns absolute count of the given word for all time.
  - totalCountHistory(): Returns total number of all words for all time. 
- - weightHistory(String word): Returns normalized count the given word for all time.
- - summedWeightHistory(String[] words): Returns the sum of normalized counts for the given words.
+ - weightHistory(String word): Returns relative frequency (a.k.a. normalized count) of the given word for all time. For example there were 186,706 words across all volumes in 1575, and thus weightHistory will be countHistory / 186706.
+ - summedWeightHistory(String[] words): Returns the sum of the relative frequencies (a.k.a. normalized counts) for the given words for all time.
  - Additionally, another version of countHistory, weightHistory, and summedWeightHistory that take starting and ending year arguments.
 
 You should not yet implement the ```processedHistory``` methods for this part of the assignment.
@@ -276,16 +276,16 @@ In this part, you'll create a UI with the following commands:
  - range [start] [end]: resets the start and end years to the values provided.
  - count [word] [year]: print the count of word in the given year.
  - hyponyms [word]: prints all hyponyms of the given word separated by spaces.
- - history [words...]: plots normalized counts of all words from start to end.
- - hypohist [words...]: plots normalized count of all hyponyms of words from start to end.
+ - history [words...]: plots relative frequency of all words from start to end.
+ - hypohist [words...]: plots relative frequency of all hyponyms of words from start to end.
 
 For example, after the following commands, the following outputs should be printed and the following plots should be generated.
 
-    $ java ngordnet.NgordnetUI ./ngrams
+    $ java ngordnet.NgordnetUI
     > count cake 1995
     76471
     > hyponyms teenager
-    [rocker, chebab, teen, adolescent, pachuco, mod, teenager, punk, stripling]
+    [young_buck, rocker, chebab, teen, adolescent, pachuco, mod, teenager, young_man, punk_rocker, punk, stripling]
     > history cake
     > range 1900 1930
     > history cake pie
@@ -298,7 +298,7 @@ For example, after the following commands, the following outputs should be print
 
 Lines that do not match these patterns should be ignored. Invalid inputs should not cause the program to crash, but you may print out helpful messages to the user if you'd like.
 
-You may find the demos/ExampleUI.java file useful. 
+Input files should be provided as a ngordnetui.config file in the ngordnet package folder. See NgordnetUI.java.skeleton for details. You may also find the demos/ExampleUI.java file useful. 
 
 8: WordLengthProcessor
 =====
