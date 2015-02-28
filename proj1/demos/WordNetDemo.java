@@ -56,6 +56,28 @@ public class WordNetDemo {
         System.out.println("Hypnoyms of jump:");
         for (String noun : wn.hyponyms("jump")) {
             System.out.println(noun);
-        }        
+        }  
+
+        /* The code below should print the following (maybe not in this order):
+            Hypnoyms of change:
+            alteration
+            saltation
+            modification
+            change
+            variation
+            increase
+            transition
+            demotion
+            leap
+            jump        
+        */
+
+        /** From: http://goo.gl/EGLoys */
+        System.out.println("Hypnoyms of change:");
+
+        WordNet wn2 = new WordNet("./wordnet/synsets14.txt", "./wordnet/hyponyms14.txt");
+        for (String noun : wn2.hyponyms("change")) {
+            System.out.println(noun);
+        }              
     }    
 } 
