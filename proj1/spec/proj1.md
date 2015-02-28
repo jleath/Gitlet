@@ -190,7 +190,7 @@ The YearlyRecord class will also provide utility methods to make data analysis a
  - counts(): Returns all words in ascending order of count.
  - rank(String word): Gives the rank of word, with 1 being the most popular word.
 
-This one will be a bit more involved than TimeSeries. The rank, size, and count methods must all be very fast, no matter how many words are in the database. Specifically, their runtime must be measurably independent of the number of entries in the YearlyRecord. That means no looping, recursion, or similar. You can achieve this through judicious use of the right data structures.
+Revised (friendlier) performance requirements (2/28/15): This one will be a bit more involved than TimeSeries. The rank, size, and count methods should all be very fast, no matter how many words are in the database. Specifically, on a "frozen" YearlyRecord, their runtime should be about the same no matter how large the YearlyRecord, where a frozen YearlyRecord is defined as one for which no additional put operations occur. That means no looping, recursion, or similar. You can achieve this through judicious use of the right data structures. You may assume that the get methods of a map take about the same time no matter how large the map. You may not assume this about the get methods of lists.    
 
 See the [YearlyRecord javadocs](javadocs/index.html?ngordnet/YearlyRecord.html) for a more precise technical specification, and YearlyRecordDemo for additional examples showing typical use.
 
