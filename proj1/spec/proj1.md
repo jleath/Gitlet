@@ -1,5 +1,5 @@
 ~ number: 1
-~ title: NGordNet (Beta+)
+~ title: NGordNet
 
 As this is a totally new project, there may be occasional bugs. Please contact Josh directly with any anomalies that you observe: hug@cs.berkeley.edu.
 
@@ -21,11 +21,11 @@ To support these investigations, you will write a new package almost from scratc
     public class NGramMap
     public class WordLengthProcessor implements YearlyRecordProcessor
     public class Plotter
-    public class NgrordnetUI
+    public class NgordnetUI
     Test classes for the classes above.
     Any additional public classes you'd like.
 
-Along the way we'll get lots of experience with different useful data structures. The full technical specification for the ngordnet package can be found [here](add java docs). Below follows a description of each class. You can go in any order you choose, but we recommend that you work through the project in the order given in this document.
+Along the way we'll get lots of experience with different useful data structures. The full technical specification for the ngordnet package can be found [here](https://berkeley-cs61b.github.io/public_html/materials/proj/proj1/javadocs/index.html). Below follows a description of each class. You can go in any order you choose, but we recommend that you work through the project in the order given in this document.
 
 To get started, use the ever fun to type ```git pull skeleton master```. You'll also need to download the project 1 datafiles (not provided via github for space reasons). You can find them [at this link](http://www.cs.berkeley.edu/~hug/p1data.zip). You should unzip these into the proj1 directory. Note that we've set up hidden [.gitignore](https://help.github.com/articles/ignoring-files/) files in the skeleton code so that git will avoid uploading these data files. This is intentional. Uploading these files to github will result in a lot of headaches for everybody, so please don't mess with the .gitignore files. If you need to work on multiple machines, you should download the zip file once for each machine.
 
@@ -100,7 +100,7 @@ We now describe the two data files that you will use to create the wordnet digra
 
         36,AND_circuit AND_gate,a circuit in a computer that fires only when all of its inputs fire
 
-    means that the synset ```{ AND_circuit, AND_gate }``` has an id number of 36 and its definition is "a circuit in a computer that fires only when all of its inputs fire". The individual nouns that comprise a synset are separated by spaces (and a synset element is not permitted to contain a space). The S synset ids are numbered 0 through S − 1; the id numbers will appear consecutively in the synset file.
+    means that the synset ```{ AND_circuit, AND_gate }``` has an id number of 36 and its definition is "a circuit in a computer that fires only when all of its inputs fire". The individual nouns that comprise a synset are separated by spaces (and a synset element is not permitted to contain a space). The S synset ids are numbered 0 through S − 1; the id numbers will appear consecutively in the synset file. You will not (officially) use the definitions in this project, though you're welcome to create public subclasses of WordNet that do use them in some interesting way.
 
   - List of hyponyms. The file hyponyms.txt (and other smaller files with hypernym in the name) contains the hyponym relationships: The first field is a synset id; subsequent fields are the id numbers of the synset's direct hyponyms. For example, the following line
 
@@ -119,9 +119,9 @@ Check out WordNetDemo.java in the demos folder. This provides examples of how th
 
 Once you've checked out the demo, you'll want to pick the ADTs that you want to use to support the desired operations. This will be somewhat similar to what you did in the week 6 discussion, namely using somewhat unfamiliar ADTs to solve a real world problem. It wouldn't be a bad idea to [review the week 6 discussion worksheet before proceeding](http://berkeley-cs61b.github.io/public_html/materials/discussion/discussion6.pdf).
 
-You're allowed to discuss designs with other students, **but we request that you do not post exact instance variable declarations on Piazza (e.g. if you decide you want to use a List\<TreeSet\<Integer\>\>, please don't post this variable declaration on Piazza)**. We want everyone to give this some real thought. Despite these admonitions, sharing ideas (or even instance variables) will not be considered plagiarism. As always, cite any help that you receive from others.
+You're allowed to discuss designs with other students, **but we request that you do not post exact instance variable declarations on Piazza (e.g. if you decide you want to use a `List<TreeSet<Integer>>`, please don't post this variable declaration on Piazza)**. We want everyone to give this some real thought. Despite these admonitions, sharing ideas (or even instance variables) will not be considered plagiarism. As always, cite any help that you receive from others.
 
-To see the exact API that you must follow for WordNet, see the [WordNet javadocs](javadocs/index.html?ngordnet/WordNet.html). Make sure to take advantage of the MethodSignatures file provided with the skeleton. **You may not add additional public or protected methods to WordNet.java or any other required files in this project. You may add additional package protected or private methods as you please. You may add additional public classes (with public methods).**
+To see the exact API that you must follow for WordNet, see the [WordNet javadocs](javadocs/index.html?ngordnet/WordNet.html). Make sure to take advantage of the MethodSignatures file provided with the skeleton. **You may not add additional public or protected methods to WordNet.java or any other required files in this project. You may add additional package protected or private methods as you please. You may add additional public classes (with public methods).** There are no restrictions on the libraries that you use. Note that if you want to use something from the Princeton Standard library, you'll need to import it (since your Ngordnet code is not part of the anonymous package). You can import `In`, for example, using `import edu.princeton.cs.introcs.In;`.
 
 See the demos/GraphDemo.java file for an example using the Digraph class. 
 
@@ -138,12 +138,12 @@ The [Google Ngram dataset](http://storage.googleapis.com/books/ngrams/books/data
 
 Our next task will be to allow for the visualization of this historical data on our own terms. Ultimately, we'll combine this dataset with the WordNet dataset to be able to ask new and interesting questions that I don't think have ever been asked before this assignment was created (cool!). 
 
-See the [project 1 slides](not yet available) for a top-down view of the NGramMap system.
+Over the weekend, I'll be releasing an overview video, as well as [project 1 slides](not yet available) that provide a top-down view of the Ngordnet system. The written spec below should be sufficient to complete the spec, so don't wait if you're eager to continue.
 
 3: TimeSeries
 =====
 
-**Do not start this part of the project until you have completed HW5 and also have a good grasp of the methods developed in the Generics lecture. It is not a bad idea to do the [lecture 14 hardMode exercise](https://github.com/Berkeley-CS61B/lectureCode/tree/master/lec14) before beginning this part of the project.**
+**Do not start this part of the project until you have completed HW5 and also have a good grasp of the methods developed in the Generics lecture. I strongly recommend doing the [lecture 14 hardMode exercise](https://github.com/Berkeley-CS61B/lectureCode/blob/master/lec14/exercises/hardMode/readme.md) before beginning this part of the project.** The lec14 hardMode exercise touches on the same tricky syntax as we'll see in this part of the project, but you'll have access to the answers (see the live1 and live2 folders).
 
 In HW5, we built some basic collections from scratch. Now we'll build a more sophisticated datatype known as a TimeSeries. A TimeSeries will be a special purpose extension of the existing TreeMap class where the key type parameter is always Integer, and the value type parameter is something that extends Number. Each key will correspond to a year, and each value a numerical data point for that year.
 
@@ -155,12 +155,12 @@ For example, the following code would create a TimeSeries<Double> and associate 
 
 The TimeSeries class will also provide additional utility methods:
 
- - years(): Returns all years as a Collection\<Number\>
- - data(): Returns all data as a Collection\<Number\>
+ - years(): Returns all years as a `Collection<Number>`
+ - data(): Returns all data as a `Collection<Number>`
  - plus(TimeSeries x): Returns the yearwise sum of x and this.
  - dividedBy(TimeSeries x): Returns the yearwise quotient of this and x.
 
-Our ultimate goal is to make usage of the xChart plotting library easy. Since xChart expects data in Collection\<Number\> form, it is natural for our TimeSeries class to provide utility methods to generate such Collections.
+Our ultimate goal is to make usage of the xChart plotting library easy. Since xChart expects data in `Collection<Number>` form, it is natural for our TimeSeries class to provide utility methods to generate such Collections.
 
 As throughout this assignment, the MethodSignatures file provided in the skeleton gives the exact class definition and signatures that you'll need. Likewise, see the TimeSeriesDemo class for a more thorough example of the behavior of the class. See the [TimeSeries javadocs](javadocs/index.html?ngordnet/TimeSeries.html) for a more detailed technical specification of your class.
 
@@ -190,13 +190,13 @@ The YearlyRecord class will also provide utility methods to make data analysis a
  - counts(): Returns all words in ascending order of count.
  - rank(String word): Gives the rank of word, with 1 being the most popular word.
 
-This one will be a bit more involved than TimeSeries. The rank, size, and count methods must all be very fast, no matter how many words are in the database. Specifically, their runtime must be measurably independent of the number of entries in the YearlyRecord. That means no looping, recursion, or similar. You can achieve this through judicious use of the right data structures.
+Revised (friendlier) performance requirements (2/28/15): This one will be a bit more involved than TimeSeries. The rank, size, and count methods should all be very fast, no matter how many words are in the database. Specifically, on a "frozen" YearlyRecord, their runtime should be about the same no matter how large the YearlyRecord, where a frozen YearlyRecord is defined as one for which no additional put operations occur. That means no looping, recursion, or similar. You can achieve this through judicious use of the right data structures. You may assume that the get methods of a map take about the same time no matter how large the map. You may not assume this about the get methods of lists.    
 
 See the [YearlyRecord javadocs](javadocs/index.html?ngordnet/YearlyRecord.html) for a more precise technical specification, and YearlyRecordDemo for additional examples showing typical use.
 
 **The basics autograder will cover up through this point in the project. Your project 1 bonus point will depend on how many AG tests you have completed by March 6th. The basics autograder will begin running the weekend of February 28th. It is intended as a basic sanity check only, and will not be a thorough test.**
 
-5: NGramMap (part 1)
+5: NGramMap
 =====
 
 The [NGramMap (javadocs)](javadocs/index.html?ngordnet/NGramMap.html) type will provide various convenient methods for interacting with Google's NGrams dataset. 
@@ -214,11 +214,11 @@ In this part of the assignment (part 5), you will add the following methods to N
  - getRecord(int year): Returns YearlyRecord for year.
  - countHistory(String word): Returns absolute count of the given word for all time.
  - totalCountHistory(): Returns total number of all words for all time. 
- - weightHistory(String word): Returns normalized count the given word for all time.
- - summedWeightHistory(String[] words): Returns the sum of normalized counts for the given words.
+ - weightHistory(String word): Returns relative frequency (a.k.a. normalized count) of the given word for all time. For example there were 186,706 words across all volumes in 1575, and thus weightHistory will be countHistory / 186706.
+ - summedWeightHistory(String[] words): Returns the sum of the relative frequencies (a.k.a. normalized counts) for the given words for all time.
  - Additionally, another version of countHistory, weightHistory, and summedWeightHistory that take starting and ending year arguments.
 
-You should not yet implement the ```processedHistory methods``` for this part of the assignment.
+You should not yet implement the ```processedHistory``` methods for this part of the assignment.
 
 As with WordNet, most of the work will be in the constructor. Make sure to pick your data structures carefully.
 
@@ -254,10 +254,10 @@ The first entry in each row is the year. The second is the total number of words
 
 You may wonder why one file is tab separated and the other is comma separated. I didn't do it, Google did. Luckily it'll be easy to handle. We'll expect you to figure out how to do this on your own, though you're welcome to ask for help if you're stuck.
 
-6: Plotter (part 1)
+6: Plotter
 =====
 
-Note to students: Everything below this line is in beta. Please let us know if you spot any glitches.
+Note to students: Everything below this line is in beta -- the spec won't change, but we may decide to give additional assistance with these classes. Please let us know if you spot any glitches.
 
 The Plotter class will use a WordNet and/or NGramMap object to create plots of data. The [Plotter (javadocs)](javadocs/index.html?ngordnet/Plotter.html) type will provide methods for graphing data using the [XChart graphing library](http://xeiam.com/xchart/). We expect you to use the available documentation and [XChartDemo.java](TODO) to figure out how to get the plots you want. 
 
@@ -276,16 +276,16 @@ In this part, you'll create a UI with the following commands:
  - range [start] [end]: resets the start and end years to the values provided.
  - count [word] [year]: print the count of word in the given year.
  - hyponyms [word]: prints all hyponyms of the given word separated by spaces.
- - history [words...]: plots normalized counts of all words from start to end.
- - hypohist [words...]: plots normalized count of all hyponyms of words from start to end.
+ - history [words...]: plots relative frequency of all words from start to end.
+ - hypohist [words...]: plots relative frequency of all hyponyms of words from start to end.
 
 For example, after the following commands, the following outputs should be printed and the following plots should be generated.
 
-    $ java ngordnet.NgordnetUI ./ngrams
+    $ java ngordnet.NgordnetUI
     > count cake 1995
     76471
     > hyponyms teenager
-    [rocker, chebab, teen, adolescent, pachuco, mod, teenager, punk, stripling]
+    [young_buck, rocker, chebab, teen, adolescent, pachuco, mod, teenager, young_man, punk_rocker, punk, stripling]
     > history cake
     > range 1900 1930
     > history cake pie
@@ -298,7 +298,7 @@ For example, after the following commands, the following outputs should be print
 
 Lines that do not match these patterns should be ignored. Invalid inputs should not cause the program to crash, but you may print out helpful messages to the user if you'd like.
 
-You may find the demos/ExampleUI.java file useful. 
+Input files should be provided as a ngordnetui.config file in the ngordnet package folder. See NgordnetUI.java.skeleton for details. You may also find the demos/ExampleUI.java file useful. 
 
 8: WordLengthProcessor
 =====

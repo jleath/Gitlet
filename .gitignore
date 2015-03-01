@@ -8,6 +8,7 @@
 *.gif
 *.html
 *.css
+*.csv
 javadocs
 
 # Proj1 files that we REALLY don't want them to upload! #
