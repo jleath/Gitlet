@@ -13,7 +13,7 @@ import java.util.Set;
 public class WordNet {
 
     /** A hashmap that maps Synset ids to ArrayLists of nouns. */
-    private BiDividerMap<Integer, Synset> synsets;
+    private HashMap<Integer, Synset> synsets;
     /** A Digraph that represents hyponyms. */
     private Digraph hypo;
     /** A mapping from nouns to ArrayLists of the synset ids that they are
@@ -39,8 +39,7 @@ public class WordNet {
 
     /** Creates a WordNet using files from SYNSETFILENAME and HYPONYMFILENAME. */
     public WordNet(String synsetFilename, String hyponymFilename) {
-        // A two-way map structure to store synsets
-        synsets = new BiDividerMap<Integer, Synset>();
+        synsets = new HashMap<Integer, Synset>();
         // Files to read in data from.
         In synsetFile = new In(synsetFilename);
         In hyponymFile = new In(hyponymFilename);
@@ -74,13 +73,13 @@ public class WordNet {
         Set<Integer> desc = GraphHelper.descendants(hypo, ids);
         HashSet<String> result = new HashSet<String>();
         for (int i : ids) {
-            Synset s = synsets.getByKey(i);
+            Synset s = synsets.get(i);
             for (String noun : s) {
                 result.add(noun);
             }
         }
         for (int i : desc) {
-            Synset s = synsets.getByKey(i);
+            Synset s = synsets.get(i);
             for (String noun : s) {
                 result.add(noun);
             }
