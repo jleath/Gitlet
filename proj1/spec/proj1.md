@@ -65,7 +65,7 @@ The WordNet digraph
 
 To store the WordNet dataset, you'll need to use at least two data structures. One of these will be a data structure we haven't discussed in class yet called a Digraph (short for Directed Graph). 
 
-A small subgraph of the WordNet Digraph is illustrated below. In our copy of the dataset (and in the graph below), words that belong to the same synset are separated by spaces (not commas as in the figure above), and collocations use underscores instead of spaces (e.g. "car_pool" instead of "car pool", same as the figure above). 
+A small subgraph of the WordNet Digraph is illustrated below. In our copy of the dataset (and in the graph below), words that belong to the same synset are separated by spaces (not commas as in the figure above), and collocations use underscores instead of spaces (e.g. "car\_pool" instead of "car pool", same as the figure above). 
 
 ![WordNet](wordnet-fig2.png "WordNet")
 
