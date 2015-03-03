@@ -31,9 +31,9 @@ To get started, use the ever fun to type ```git pull skeleton master```. You'll 
 
 Part of the grade for this project will include following the [course style guidelines](http://berkeley-cs61b.github.io/public_html/materials/guides/style-guide.html). As noted, you should not try to read these rules, though they may be a useful reference. It will be much easier to simply run the style checker. You can do this by running the style61b.py script provided in the lib folder (you may need to pull from skeleton again if you don't see it). For example, on my machine, I can run it as follows.
 
-    $ python /Users/jug/work/61b/course-materials/lib/style61b.py \*.java
+    $ python /Users/jug/work/61b/course-materials/lib/style61b.py *.java
 
-There are no secret tests for the style checker, though we reserve the right to grade you holistically on your overall code composition. 
+There are no secret tests for the style checker, though we reserve the right to grade you holistically on your overall code composition. We will only style check the required .java files, i.e. those in the MethodSignatures file / javadocs.
 
 Similarly, time permitting, we will be allocating a small portion of your grade to the thoroughness of your JUnit tests. We hope that we've convinced you that tests are easy to write and can save you a ton of time if done properly. 
 
