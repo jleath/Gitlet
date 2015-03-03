@@ -39,4 +39,8 @@ public class Synset implements Iterable<String>{
     public boolean contains(String s) {
         return synonymSet.contains(s);
     }
+
+    public boolean equals(Synset other) {
+        return getId() == other.getId() && getSynonyms().equals(other.getSynonyms());
+    }
 }

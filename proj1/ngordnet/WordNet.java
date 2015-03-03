@@ -15,57 +15,51 @@ public class WordNet {
     /** A hashmap that maps Synset ids to ArrayLists of nouns. */
     private BiDividerMap<Integer, Synset> synsets;
     /** A Digraph that represents hyponyms. */
-    private Digraph hyponyms;
+    private Digraph hypo;
+    /** A mapping from nouns to ArrayLists of the synset ids that they are
+     *  members of. */
+    private SynsetLookupTable lookupTable;
 
     /** Creates a BiDividerMap representing the synsets in a WordNet structure. */
     private void buildSynsets(In in) {
-        SynsetParser sp;
+        SynsetParser sp = new SynsetParser();
         Synset synonyms;
         while (in.hasNextLine()) {
-            sp = new SynsetParser(in.readLine());
-            synonyms = sp.buildSynset();
+            synonyms = sp.buildSynset(in.readLine());
             synsets.put(synonyms.getId(), synonyms);
         }
+        lookupTable = sp.getLookupTable();
     }
 
     /** Creates a Digraph representing the hyponyms in a WordNet structure. */
     private void buildHyponyms(In in) {
         HyponymParser hp = new HyponymParser(in, synsets.size());
-        hyponyms = hp.hyponyms;
+        hypo = hp.buildHyponymGraph();
     }
 
     /** Creates a WordNet using files from SYNSETFILENAME and HYPONYMFILENAME. */
     public WordNet(String synsetFilename, String hyponymFilename) {
+        // A two-way map structure to store synsets
         synsets = new BiDividerMap<Integer, Synset>();
+        // Files to read in data from.
         In synsetFile = new In(synsetFilename);
         In hyponymFile = new In(hyponymFilename);
         // Store all the synsets
         buildSynsets(synsetFile);
-        hyponyms = new Digraph(synsets.size());
+        // Build a directed graph of synset ids.
         buildHyponyms(hyponymFile);
     }
 
     /** Returns the set of all nouns in this WordNet.
      */
     public Set<String> nouns() {
-        HashSet<String> words = new HashSet<String>();
-        for (Synset s : synsets.getValues()) {
-            for (String word : s) {
-                words.add(word);
-            }
-        }
-        return words;
+        return lookupTable.getNouns();
     }
 
     /** Returns true if NOUN is indeed a noun, else false.
      */
     public boolean isNoun(String noun) {
-        for (Synset s : synsets.getValues()) {
-            if (s.contains(noun)) {
-                return true;
-            }
-        }
-        return false;
+        return lookupTable.getNouns().contains(noun);
     }
 
     /** Returns the set of all hyponyms of WORD as well as all synonyms of
@@ -73,7 +67,21 @@ public class WordNet {
      *  all of these synsets. Does not include hyponyms of synonyms.
      */
     public Set<String> hyponyms(String word) {
-        //TODO
-        return new HashSet<String>();
+        Set<Integer> ids = lookupTable.getIds(word);
+        Set<Integer> desc = GraphHelper.descendants(hypo, ids);
+        HashSet<String> result = new HashSet<String>();
+        for (int i : ids) {
+            Synset s = synsets.getByKey(i);
+            for (String noun : s) {
+                result.add(noun);
+            }
+        }
+        for (int i : desc) {
+            Synset s = synsets.getByKey(i);
+            for (String noun : s) {
+                result.add(noun);
+            }
+        }
+        return result;
     }
 }
