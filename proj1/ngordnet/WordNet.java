@@ -2,8 +2,9 @@ package ngordnet;
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.introcs.In;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.ArrayList;
-
+import java.util.Set;
 
 /** An object that stores the WordNet graph in a manner useful for extracting
  *  all hyponyms of a word.
@@ -12,60 +13,30 @@ import java.util.ArrayList;
 public class WordNet {
 
     /** A hashmap that maps Synset ids to ArrayLists of nouns. */
-    private HashMap<Integer, ArrayList<String>> synsets;
-
+    private BiDividerMap<Integer, Synset> synsets;
     /** A Digraph that represents hyponyms. */
     private Digraph hyponyms;
 
-    /** Splits the string on the remaining line of IN into its individual words 
-     * (seperated by whitespace) stores them in an ArrayList. */
-    private ArrayList<String> splitWords(In in) {
-        String line = In.readString();
-        String word = "";
-        ArrayList<String> words = new ArrayList<String>();
-        char curr = ' ';
-        while (true) {
-            curr = In.readChar();
-            if (curr == ',' || curr == '\n') {
-                return words;
-            } else if (curr == ' ') {
-                ArrayList.add(word);
-                word = "";
-            } else {
-                word = word + curr;
-            }
-        }
-        return words;
-    }
-
-    /** Creates a HashMap representing the synsets in a WordNet structure. */
+    /** Creates a BiDividerMap representing the synsets in a WordNet structure. */
     private void buildSynsets(In in) {
-        while (!in.isEmpty()) {
-            int synsetID = in.readInt();
-            in.readChar();
-            ArrayList<String> words = splitWords(in);
-            in.readLine();
-            synsets.put(synsetID, words);
+        SynsetParser sp;
+        Synset synonyms;
+        while (in.hasNextLine()) {
+            sp = new SynsetParser(in.readLine());
+            synonyms = sp.buildSynset();
+            synsets.put(synonyms.getId(), synonyms);
         }
     }
 
     /** Creates a Digraph representing the hyponyms in a WordNet structure. */
     private void buildHyponyms(In in) {
-        char curr == ' ';
-        int v, w;
-        while(!in.isEmpty()) {
-            v = in.readInt();
-            curr = in.readChar();
-            while (curr != '\n') {
-                w = in.readInt();
-                hyponyms.addEdge(v, w);
-                curr = in.readChar();
-            }
-        }
+        HyponymParser hp = new HyponymParser(in, synsets.size());
+        hyponyms = hp.hyponyms;
     }
 
     /** Creates a WordNet using files from SYNSETFILENAME and HYPONYMFILENAME. */
     public WordNet(String synsetFilename, String hyponymFilename) {
+        synsets = new BiDividerMap<Integer, Synset>();
         In synsetFile = new In(synsetFilename);
         In hyponymFile = new In(hyponymFilename);
         // Store all the synsets
@@ -77,13 +48,24 @@ public class WordNet {
     /** Returns the set of all nouns in this WordNet.
      */
     public Set<String> nouns() {
-        //TODO
+        HashSet<String> words = new HashSet<String>();
+        for (Synset s : synsets.getValues()) {
+            for (String word : s) {
+                words.add(word);
+            }
+        }
+        return words;
     }
 
     /** Returns true if NOUN is indeed a noun, else false.
      */
     public boolean isNoun(String noun) {
-        //TODO
+        for (Synset s : synsets.getValues()) {
+            if (s.contains(noun)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Returns the set of all hyponyms of WORD as well as all synonyms of
@@ -92,5 +74,6 @@ public class WordNet {
      */
     public Set<String> hyponyms(String word) {
         //TODO
+        return new HashSet<String>();
     }
 }
