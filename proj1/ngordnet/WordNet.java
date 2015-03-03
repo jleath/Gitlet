@@ -67,6 +67,9 @@ public class WordNet {
      *  all of these synsets. Does not include hyponyms of synonyms.
      */
     public Set<String> hyponyms(String word) {
+        if (!isNoun(word)) {
+            throw new IllegalArgumentException(word + " is not a noun in the system.");
+        }
         Set<Integer> ids = lookupTable.getIds(word);
         Set<Integer> desc = GraphHelper.descendants(hypo, ids);
         HashSet<String> result = new HashSet<String>();
