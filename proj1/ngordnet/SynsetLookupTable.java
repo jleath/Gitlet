@@ -34,7 +34,7 @@ public class SynsetLookupTable {
         }
     }
 
-    /** Returns an ArrayList that contains the ids of all the synsets
+    /** Returns a HashSet that contains the ids of all the synsets
      *  that NOUN is a member of.
      */
     public HashSet<Integer> getIds(String noun) {
