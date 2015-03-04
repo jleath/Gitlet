@@ -138,7 +138,7 @@ The [Google Ngram dataset](http://storage.googleapis.com/books/ngrams/books/data
 
 Our next task will be to allow for the visualization of this historical data on our own terms. Ultimately, we'll combine this dataset with the WordNet dataset to be able to ask new and interesting questions that I don't think have ever been asked before this assignment was created (cool!). 
 
-Over the weekend, I'll be releasing an overview video, as well as [project 1 slides](not yet available) that provide a top-down view of the Ngordnet system. The written spec below should be sufficient to complete the spec, so don't wait if you're eager to continue.
+Over the weekend, I'll be releasing an overview video, as well as [project 1 slides](https://docs.google.com/presentation/d/1KqBKvX6ZOp-8lvKcrE-wTg7_7ZFeeu9cGtH_SHtL4qg/pub?start=false&loop=false&delayms=3000) that provide a top-down view of the Ngordnet system. The written spec below should be sufficient to complete the spec, so don't wait if you're eager to continue.
 
 3: TimeSeries
 =====
@@ -190,9 +190,11 @@ The YearlyRecord class will also provide utility methods to make data analysis a
  - counts(): Returns all counts in ascending order of count.
  - rank(String word): Gives the rank of word, with 1 being the most popular word. If two words have the same rank, break ties arbitrarily. No two words should have the same rank.
 
-Revised (friendlier) performance requirements (2/28/15): This one will be a bit more involved than TimeSeries. The rank, size, and count methods should all be very fast, no matter how many words are in the database. Specifically, on a "frozen" YearlyRecord, their runtime should be about the same no matter how large the YearlyRecord, where a frozen YearlyRecord is defined as one for which no additional put operations occur. That means no looping, recursion, sorting, or similar. You can achieve this through judicious use of the right data structures. You may assume that the get methods of a map take about the same time no matter how large the map. You may not assume this about the get methods of lists. 
+Revised (friendlier) performance requirements (2/28/15): This one will be a bit more involved than TimeSeries. The rank, size, and count methods should all be very fast, no matter how many words are in the database. Specifically, on a "frozen" YearlyRecord, their runtime should be about the same on average no matter how large the YearlyRecord, where a frozen YearlyRecord is defined as one for which no additional put operations occur. That means that typical calls to these methods cannot use looping, recursion, sorting, or similar. However, it is OK if one or more of these techniques is used rarely. See <a href="https://docs.google.com/presentation/d/1KqBKvX6ZOp-8lvKcrE-wTg7_7ZFeeu9cGtH_SHtL4qg/edit#slide=id.g7be664e68_15117">this example</a> for more.
 
-Revised (stricter) performance revision (3/3/15): Your put method should be fast no matter how large the datafiles. Otherwise the plotting part of this assignment will be no fun because you'll be stuck with tiny datasets. 
+You can achieve this through judicious use of the right data structures. You may assume that the get methods of a map take about the same time no matter how large the map. You may not assume this about the get methods of lists. 
+
+Revised (stricter) performance revision (3/3/15): For 0.1 points of extra credit, your put method should be fast no matter how large the datafiles. This will also make the plotting part of the assignment more interesting since you'll be able to read all\_words.csv.
 
 See the [YearlyRecord javadocs](javadocs/index.html?ngordnet/YearlyRecord.html) for a more precise technical specification, and YearlyRecordDemo for additional examples showing typical use.
 
