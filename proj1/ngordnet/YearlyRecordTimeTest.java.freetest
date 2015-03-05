@@ -106,7 +106,7 @@ public class YearlyRecordTimeTest {
         System.out.println("   yearly record in less than 1 second? Pass on submit/proj1");
         System.out.println("   for 0.1 bonus points.\n");        
 
-        System.out.println(" * TestPut100000: Can your code insert 1000 items into a");
+        System.out.println(" * TestPut1000: Can your code insert 1000 items into a");
         System.out.println("   yearly record in less than 1 second? No bonus credit, but");
         System.out.println("   your code really ought to be able to do this! I hope");
         System.out.println("   the thirst for efficiency is sufficient to motivate you.\n");
