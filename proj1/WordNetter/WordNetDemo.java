@@ -15,5 +15,6 @@ public class WordNetDemo {
                 cnt = 0;
             }
         }
+        System.out.println();
     }
 }
