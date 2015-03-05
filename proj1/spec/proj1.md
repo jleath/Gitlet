@@ -196,9 +196,11 @@ You can achieve this through judicious use of the right data structures. You may
 
 Revised (stricter) performance revision (3/3/15): For 0.1 points of extra credit, your put method should be fast no matter how large the datafiles. This will also make the plotting part of the assignment more interesting since you'll be able to read all\_words.csv.
 
+**See the provided YearlyRecordTimeTest.java.freetest file for a timing test.** You'll need to rename this file to have a .java extension before it can be compiled.
+
 See the [YearlyRecord javadocs](javadocs/index.html?ngordnet/YearlyRecord.html) for a more precise technical specification, and YearlyRecordDemo for additional examples showing typical use.
 
-**The basics autograder will cover up through this point in the project. Your project 1 bonus point will depend on how many AG tests you have completed by March 6th. The basics autograder will begin running the weekend of February 28th. It is intended as a basic sanity check only, and will not be a thorough test.**
+**The basics autograder will cover up through this point in the project. Your project 1 bonus point will depend on how many AG tests you have completed by March 6th at 11:59 PM. It is intended as a basic sanity check only, and will not be a thorough test.**
 
 5: NGramMap
 =====
