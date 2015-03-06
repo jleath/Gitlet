@@ -1,67 +1,111 @@
 package ngordnet;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.TreeMap;
 import java.util.Collection;
-import java.util.Comparator;
+import java.util.TreeSet;
+import java.util.ArrayList;
 
 /** An object that stores all word counts for a given year.
  *  @author Joshua Leath
  */
 
 public class YearlyRecord {
-
-    /** The number of words that have been recorded this year. */
+    /** A HashMap mapping counts to words. */
+    private HashMap<Number, String> countBased;
+    private LinkedHashMap<String, Number> wordBased;
+    private HashMap<String, Integer> ranking;
+    private ArrayList<ExtraWord> duplicates;
     private int wordCount;
-    /** A TreeMap that maps from the word's counts to the word. */
-    private TreeMap<Number, String> countBased;
-    /** A HashMap that maps from the word to the word's counts. */
-    private HashMap<String, Integer> wordBased;
-    
+    private boolean cached;
+
+    private class ExtraWord {
+        private Number count;
+        private String word;
+
+        private ExtraWord(Number c, String w) {
+            count = c;
+            word = w;
+        }
+    }
+
     /** Creates a new empty YearlyRecord. */
     public YearlyRecord() {
+        cached = false;
         wordCount = 0;
-        countBased = new TreeMap<Number, String>(new Comparator<Number>()
-                     {
-                         public int compare(Number o1, Number o2)
-                         {
-                             Integer x = o1.intValue();
-                             Integer y = o2.intValue();
-                             return x.compareTo(y);
-                         }
-                     });
-        wordBased = new HashMap<String, Integer>();
+        wordBased = new LinkedHashMap<String, Number>();
+        countBased = new HashMap<Number, String>();
+        ranking = new HashMap<String, Integer>();
+        duplicates = new ArrayList<ExtraWord>();
+    }
+
+    private void cache() {
+        TreeSet<Number> sortedCounts = new TreeSet<Number>(countBased.keySet());
+        for (Number n : sortedCounts) {
+            wordBased.put(countBased.get(n), n);
+            for (ExtraWord extra : duplicates) {
+                if (n.equals(extra.count)) {
+                    wordBased.put(extra.word, n);
+                    duplicates.remove(extra);
+                    break;
+                }
+            }
+        }
+        int totalSize = wordBased.size();
+        int i = totalSize;
+        for (String word : wordBased.keySet()) {
+            ranking.put(word, i);
+            i = i - 1;
+        }
+        cached = true;
     }
 
     /** Creates a YearlyRecord using the given data. */
     public YearlyRecord(HashMap<String, Integer> otherCountMap) {
         this();
-        wordCount = 0;
         for (String s : otherCountMap.keySet()) {
             put(s, otherCountMap.get(s));
-            wordCount = wordCount + 1;
         }
     }
 
     /** Returns the number of times WORD appeared in this year. */
     public int count(String word) {
-        return getByWord(word);
+        if (!cached) {
+            cache();
+            cached = true;
+        }
+        return wordBased.get(word).intValue();
     }
 
     /** Returns all counts in ascending order of count. */
     public Collection<Number> counts() {
-        return countBased.keySet();
+        if (!cached) {
+            cache();
+            cached = true;
+        }
+        return wordBased.values();
     }
 
     /** Records that WORD occured COUNT times in this year. */
     public void put(String word, int count) {
-        countBased.put(count, word);
-        wordBased.put(word, count);
+        if (countBased.containsKey(count)) {
+            duplicates.add(new ExtraWord(count, word));
+            wordCount = wordCount + 1;
+            return;
+        }
+
         wordCount = wordCount + 1;
+        cached = false;
+        countBased.put(count, word);
     }
 
     /** Returns rank of WORD. */
     public int rank(String word) {
-        return countBased.tailMap(wordBased.get(word), true).size();
+        if (!cached) {
+            cache();
+            cached = true;
+        }
+        return ranking.get(word);
     }
 
     /** Returns the number of words recorded this year. */
@@ -71,16 +115,10 @@ public class YearlyRecord {
     
     /** Returns all words in ascending order of count. */
     public Collection<String> words() {
-        return countBased.values();
-    }
-
-    /** Returns the count associated with WORD. */
-    private int getByWord(String word) {
-        return wordBased.get(word);
-    }
-
-    /** Returns the word associated with COUNT. */
-    private String getByCount(int count) {
-        return countBased.get(count);
+        if (!cached) {
+            cache();
+            cached = true;
+        }
+        return wordBased.keySet();
     }
 }
