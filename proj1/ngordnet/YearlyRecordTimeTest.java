@@ -29,8 +29,8 @@ public class YearlyRecordTimeTest {
     @Test
     public void stressTest() {
         Stopwatch sw = new Stopwatch();
-        testPutHelper(10000000);
-        System.out.println("Inserted ten million items in " + sw.elapsedTime());
+        testPutHelper(5000000);
+        System.out.println("Inserted five million items in " + sw.elapsedTime());
         System.out.println();
     }
 

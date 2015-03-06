@@ -18,6 +18,7 @@ public class YearlyRecord {
     private ArrayList<ExtraWord> duplicates;
     private int wordCount;
     private boolean cached;
+    private int sinceLastCache;
 
     private class ExtraWord {
         private Number count;
@@ -37,6 +38,7 @@ public class YearlyRecord {
         countBased = new HashMap<Number, String>();
         ranking = new HashMap<String, Integer>();
         duplicates = new ArrayList<ExtraWord>();
+        sinceLastCache = 0;
     }
 
     private void cache() {
@@ -57,6 +59,7 @@ public class YearlyRecord {
             ranking.put(word, i);
             i = i - 1;
         }
+        countBased.clear();
         cached = true;
     }
 
@@ -93,8 +96,16 @@ public class YearlyRecord {
             wordCount = wordCount + 1;
             return;
         }
+        if (sinceLastCache > 1000000) {
+            cache();
+            sinceLastCache = 0;
+        }
+        if (duplicates.size() > 1000) {
+            cache();
+        }
 
         wordCount = wordCount + 1;
+        sinceLastCache = sinceLastCache + 1;
         cached = false;
         countBased.put(count, word);
     }
