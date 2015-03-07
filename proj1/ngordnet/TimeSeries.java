@@ -25,9 +25,10 @@ public class TimeSeries<T extends Number> extends TreeMap<Integer, T> {
      *  inclusive of both end points. */
     public TimeSeries(TimeSeries<T> ts, int startYear, int endYear) {
         super();
-        SortedMap<Integer, T> withinRange = ts.subMap(startYear, endYear+1); 
-        for (int i : withinRange.keySet()) {
-            put(i, withinRange.get(i));
+        for (int i : ts.keySet()) {
+            if (i <= endYear && i >= startYear) {
+                put(i, ts.get(i));
+            }
         }
     }
 

@@ -84,6 +84,7 @@ public class WordNet {
                 result.add(noun);
             }
         }
+        result.add(word);
         return result;
     }
 }
