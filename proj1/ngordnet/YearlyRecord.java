@@ -18,7 +18,6 @@ public class YearlyRecord {
     private ArrayList<ExtraWord> duplicates;
     private int wordCount;
     private boolean cached;
-    private int sinceLastCache;
 
     private class ExtraWord {
         private Number count;
@@ -38,20 +37,23 @@ public class YearlyRecord {
         countBased = new HashMap<Number, String>();
         ranking = new HashMap<String, Integer>();
         duplicates = new ArrayList<ExtraWord>();
-        sinceLastCache = 0;
     }
 
-    private void cache() {
+    public void cache() {
         TreeSet<Number> sortedCounts = new TreeSet<Number>(countBased.keySet());
+        ArrayList<ExtraWord> toRemove = new ArrayList<ExtraWord>();
         for (Number n : sortedCounts) {
             wordBased.put(countBased.get(n), n);
             for (ExtraWord extra : duplicates) {
                 if (n.equals(extra.count)) {
                     wordBased.put(extra.word, n);
-                    duplicates.remove(extra);
-                    break;
+                    toRemove.add(extra);
                 }
             }
+            for (ExtraWord extra : toRemove) {
+                duplicates.remove(extra);
+            }
+            toRemove.clear();
         }
         int totalSize = wordBased.size();
         int i = totalSize;
@@ -77,7 +79,11 @@ public class YearlyRecord {
             cache();
             cached = true;
         }
-        return wordBased.get(word).intValue();
+        if (wordBased.containsKey(word)) {
+            return wordBased.get(word).intValue();
+        } else {
+            return 0;
+        }
     }
 
     /** Returns all counts in ascending order of count. */
@@ -96,16 +102,7 @@ public class YearlyRecord {
             wordCount = wordCount + 1;
             return;
         }
-        if (sinceLastCache > 1000000) {
-            cache();
-            sinceLastCache = 0;
-        }
-        if (duplicates.size() > 1000) {
-            cache();
-        }
-
         wordCount = wordCount + 1;
-        sinceLastCache = sinceLastCache + 1;
         cached = false;
         countBased.put(count, word);
     }

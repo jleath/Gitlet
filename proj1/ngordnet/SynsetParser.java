@@ -35,19 +35,20 @@ public class SynsetParser {
     }
 
     private ArrayList<String> getWords(String line) {
-        String word = "";
+        StringBuilder wordBuilder = new StringBuilder();
         ArrayList<String> words = new ArrayList<String>();
         while (line.charAt(currChar) != ',') {
             if (line.charAt(currChar) == ' ') {
+                String word = wordBuilder.toString();
                 words.add(word);
-                word = "";
+                wordBuilder = new StringBuilder();
             } else {
-                word = word + line.charAt(currChar);
+                wordBuilder.append(line.charAt(currChar));
             }
             currChar = currChar + 1;
         }
+        String word = wordBuilder.toString();
         words.add(word);
-        word = "";
         return words;
     }
 }

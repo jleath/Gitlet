@@ -2,7 +2,7 @@ package ngordnet;
 import java.util.Collection;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.LinkedHashSet;
 
 /** An object for mapping a year number (e.g. 1996) to numerical data.
  *  Provides utility methods useful for data analysis.
@@ -33,7 +33,7 @@ public class TimeSeries<T extends Number> extends TreeMap<Integer, T> {
 
     /** Returns all data for this time series (in any order). */
     public Collection<Number> data() {
-        TreeSet<Number> result = new TreeSet<Number>();
+        LinkedHashSet<Number> result = new LinkedHashSet<Number>();
         for (T v : values()) {
             Number n = v;
             result.add(n);
@@ -74,7 +74,7 @@ public class TimeSeries<T extends Number> extends TreeMap<Integer, T> {
 
     /** Returns all years for this time series (in any order). */
     public Collection<Number> years() {
-        TreeSet<Number> result = new TreeSet<Number>();
+        LinkedHashSet<Number> result = new LinkedHashSet<Number>();
         for (Integer i : keySet()) {
             Number n = i;
             result.add(n);

@@ -25,20 +25,11 @@ public class YearlyRecordTimeTest {
         return buffer.toString();
     }
 
-    /** Times how long it takes to insert 10,000,000 items into a YearlyRecord. */
-    @Test
-    public void stressTest() {
-        Stopwatch sw = new Stopwatch();
-        testPutHelper(5000000);
-        System.out.println("Inserted five million items in " + sw.elapsedTime());
-        System.out.println();
-    }
-
     /** Inserts N random Strings and dummy counts into a YearlyRecord. */
-    private void testPutHelper(long N) {
+    private void testPutHelper(int N) {
         YearlyRecord yr = new YearlyRecord();
 
-        for (long i = 0; i < N; i += 1) {
+        for (int i = 0; i < N; i += 1) {
             String rs = randomString();
             /* Each random string has a random count of between 0 and 49. 
              * May include multiple strings with same count. */
@@ -87,41 +78,6 @@ public class YearlyRecordTimeTest {
         return rankCount;
     }
 
-    private int countRankCallsTwice(int N, int maxTime) {
-        YearlyRecord yr = new YearlyRecord();
-
-        List<String> words = new ArrayList<String>();
-        for (int i = 0; i < N; i += 1) {
-            String rs = randomString();
-            yr.put(rs, i);
-            words.add(rs);
-        }
-
-        int rankCount = 0;
-        Stopwatch sw = new Stopwatch();
-        while (sw.elapsedTime() < maxTime) {
-            String retrievalString = words.get(StdRandom.uniform(0, N));
-            yr.rank(retrievalString);
-            rankCount += 1;
-        }
-
-        System.out.println("Completed " + rankCount + " rank() ops in " + maxTime
-                           + " seconds on YearlyRecord with " + N + " entries.");
-
-        rankCount = 0;
-        sw = new Stopwatch();
-        while (sw.elapsedTime() < maxTime) {
-            String retrievalString = words.get(StdRandom.uniform(0, N));
-            yr.rank(retrievalString);
-            rankCount += 1;
-        }
-
-        System.out.println("Completed " + rankCount + " rank() ops in " + maxTime
-                           + " seconds on YearlyRecord with " + N + " entries.");
-
-        return rankCount;
-    }
-
     /** Tests to see if your rank() function is independent of YearlyRecord size. 
       * Must pass for full credit. */
     @Test(timeout = 10000)
@@ -132,7 +88,7 @@ public class YearlyRecordTimeTest {
 
         numWordsToPut = 100;
         int numRankCallsLargerYR = countRankCalls(numWordsToPut, maxTimeInSeconds);
-
+    
         double ratio = ((double) numRankCallsTinyYR / (double) numRankCallsLargerYR);
         assertTrue("Expected ratio of number of rank calls to be no more than 10. "
                    + "Actual ratio was: " + ratio, ratio < 10);
