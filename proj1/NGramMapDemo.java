@@ -31,10 +31,11 @@ public class NGramMapDemo {
                            / (double) totalCountHistory.get(1736)); 
 
         ArrayList<String> words = new ArrayList<String>();
-        words.add("quantity");
-        words.add("quality");        
+        words.add("dog");
+        words.add("cat");        
 
-        TimeSeries<Double> sum = ngm.summedWeightHistory(words);
+        TimeSeries<Double> sum = ngm.summedWeightHistory(words, 0, 2000);
+        System.out.println(sum.size());
         System.out.println(sum.get(1736)); // should print roughly 3.875E-5
     }
 }

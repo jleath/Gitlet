@@ -35,17 +35,17 @@ public class Plotter {
         Chart chart = new ChartBuilder().width(800).height(600).xAxisTitle("years").yAxisTitle("data").build();
         int seriesAdded = 0;
         for (String categoryLabel : categoryLabels) {
-            Set words = wn.hyponyms(categoryLabel);
-            TimeSeries bundle = ngm.summedWeightHistory(words, startYear, endYear);
-            if (bundle.size() != 0) {
-                chart.addSeries(categoryLabel, bundle.years(), bundle.data());
-                seriesAdded = seriesAdded + 1;
+            Set<String> words = wn.hyponyms(categoryLabel);
+            TimeSeries<Double> bundle = ngm.summedWeightHistory(words, startYear, endYear);
+            if (bundle.size() == 0) {
+                System.out.println("No data for " + categoryLabel);
+                continue;
             }
+            chart.addSeries(categoryLabel, bundle.years(), bundle.data());
+            seriesAdded = seriesAdded + 1;
         }
         if (seriesAdded != 0) {
             new SwingWrapper(chart).displayChart();
-        } else {
-            System.out.println("No series added!");
         }
     }
 

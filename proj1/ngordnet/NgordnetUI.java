@@ -87,7 +87,11 @@ public class NgordnetUI {
                         sb.append(line.charAt(curr));
                         curr = curr + 1;
                     }
-                    words.add(sb.toString());
+                    if (wn.isNoun(sb.toString())) {
+                        words.add(sb.toString());
+                    } else {
+                        System.out.println("Cannot find " + sb.toString() + ". Ignoring.");
+                    }
                     sb = new StringBuilder();
                     curr = curr + 1;
                 }
@@ -105,11 +109,17 @@ public class NgordnetUI {
                         sb.append(line.charAt(curr));
                         curr = curr + 1;
                     }
-                    words.add(sb.toString());
+                    if (wn.isNoun(sb.toString())) {
+                        words.add(sb.toString());
+                    }
                     sb = new StringBuilder();
                     curr = curr + 1;
                 }
-                Plotter.plotCategoryWeights(ngm, wn, words.toArray(ex), startYear, endYear);
+                if (words.size() > 0) {
+                    Plotter.plotCategoryWeights(ngm, wn, words.toArray(ex), startYear, endYear);
+                } else {
+                    System.out.println("No valid words entered.");
+                }
             }
         }
     }

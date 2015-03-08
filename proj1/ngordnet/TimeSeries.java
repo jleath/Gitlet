@@ -50,7 +50,7 @@ public class TimeSeries<T extends Number> extends TreeMap<Integer, T> {
             if (ts.containsKey(n)) {
                 result.put(n.intValue(), get(n).doubleValue() / ts.get(n).doubleValue()); 
             } else {
-                throw new IllegalArgumentException();
+                result.put(n.intValue(), get(n).doubleValue());
             }
         }
         return result;
