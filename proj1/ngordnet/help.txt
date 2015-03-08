@@ -5,3 +5,4 @@ count [word] [year]: print the count of word in the given year.
 hyponyms[word]: prints all hyponyms of the given word.
 history [words...]: plots relative frequency of all words from start to end.
 hypohist[words...]: plots relative frequency of all hyponyms of words from start to end.
+wordlength: plots the average word length of all words from start to end.

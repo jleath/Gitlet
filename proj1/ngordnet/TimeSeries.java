@@ -3,6 +3,8 @@ import java.util.Collection;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 /** An object for mapping a year number (e.g. 1996) to numerical data.
  *  Provides utility methods useful for data analysis.
@@ -34,7 +36,7 @@ public class TimeSeries<T extends Number> extends TreeMap<Integer, T> {
 
     /** Returns all data for this time series (in any order). */
     public Collection<Number> data() {
-        LinkedHashSet<Number> result = new LinkedHashSet<Number>();
+        LinkedList<Number> result = new LinkedList<Number>();
         for (T v : values()) {
             Number n = v;
             result.add(n);

@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.ArrayList;
 
 /** Provides a simple user interface for exploring WordNet and NGram data.
- *  @author [yournamehere mcjones]
+ *  @author Joshua Leath
  */
 public class NgordnetUI {
     public static void main(String[] args) {
@@ -120,6 +120,9 @@ public class NgordnetUI {
                 } else {
                     System.out.println("No valid words entered.");
                 }
+            } else if (cmd.equals("wordlength")) {
+                WordLengthProcessor wlp = new WordLengthProcessor();
+                Plotter.plotProcessedHistory(ngm, startYear, endYear, wlp);
             }
         }
     }

@@ -62,12 +62,10 @@ public class Plotter {
         plotTS(countHistory, "Popularity", "year", "count", word);
     }
 
-    /*
     public static void plotProcessedHistory(NGramMap ngm, int startYear,
             int endYear, YearlyRecordProcessor yrp) {
-        //TODO LATER
+        plotTS(ngm.processedHistory(startYear, endYear, yrp), "Average Word Length", "year", "length", "average");
     }
-    */
 
     public static void plotTS(TimeSeries<? extends Number> ts, String title,
             String xlabel, String ylabel, String legend) {

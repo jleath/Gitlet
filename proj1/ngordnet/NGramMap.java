@@ -106,19 +106,27 @@ public class NGramMap {
     }
 
     /** Provides processed history of all words between STARTYEAR and ENDYEAR
-     *  as processed by YRP. 
+     *  as processed by YRP. */
     public TimeSeries<Double> processedHistory(int startYear, int endYear, YearlyRecordProcessor yrp) {
-        //TODO LATER
-        return new TimeSeries<Double>();
+        TimeSeries<Double> result = new TimeSeries<Double>();
+        for (int year : yrMap.keySet()) {
+            if (year <= endYear && year >= startYear) {
+                result.put(year, yrp.process(yrMap.get(year)));
+            }
+        }
+        System.out.println(result.years());
+        System.out.println(result.data());
+        return result;
     }
-    */
 
-    /** Provides processed history of all words ever as processed by YRP.
+    /** Provides processed history of all words ever as processed by YRP. */
     public TimeSeries<Double> processedHistory(YearlyRecordProcessor yrp) {
-        //TODO LATER
-        return new TimeSeries<Double>();
+        TimeSeries<Double> result = new TimeSeries<Double>();
+        for (Integer year : yrMap.keySet()) {
+            result.put(year, yrp.process(yrMap.get(year)));
+        }
+        return result;
     }
-    */
 
     /** Returns the summed weight relative frequency of all WORDS. */
     public TimeSeries<Double> summedWeightHistory(Collection<String> words) {
@@ -158,12 +166,6 @@ public class NGramMap {
             return new TimeSeries<Double>();
         }
         TimeSeries<Integer> counts = countHistory(word, startYear, endYear);
-        //TimeSeries<Integer> counts;
-        //if (copy == null) {
-        //    counts = new TimeSeries<Integer>();
-        //} else {
-        //    counts = new TimeSeries<Integer>(countHistory(word), startYear, endYear);
-        //}
         TimeSeries<Long> totals = new TimeSeries<Long>(totalCountHistory(), startYear, endYear);
         return counts.dividedBy(totals);
     }
