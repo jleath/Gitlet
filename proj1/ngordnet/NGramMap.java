@@ -114,8 +114,6 @@ public class NGramMap {
                 result.put(year, yrp.process(yrMap.get(year)));
             }
         }
-        System.out.println(result.years());
-        System.out.println(result.data());
         return result;
     }
 

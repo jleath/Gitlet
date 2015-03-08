@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 public class Plotter {
     
@@ -82,9 +83,23 @@ public class Plotter {
         plotTS(weightHistory, "Popularity", "year", "weight", word);
     }
 
-    /*
     public static void plotZipfsLaw(NGramMap ngm, int year) {
-        //TODO later
+        Collection yValues = ngm.getRecord(year).counts();
+        LinkedList<Integer> xValues = new LinkedList<Integer>();
+        for (int i = yValues.size(); i > 0; i -= 1) {
+            xValues.add(i);
+        }
+
+        String title = "Zipf's Law";
+        String ylabel = "count";
+        String xlabel = "rank";
+        String legend = "Zipf";
+
+        Chart chart = new ChartBuilder().width(800).height(600).xAxisTitle(ylabel).yAxisTitle(xlabel).build();
+        chart.getStyleManager().setYAxisLogarithmic(true);
+        chart.getStyleManager().setXAxisLogarithmic(true);
+        chart.addSeries(legend, xValues, yValues);
+
+        new SwingWrapper(chart).displayChart();
     }
-    */
 }

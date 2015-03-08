@@ -41,6 +41,9 @@ public class NgordnetUI {
                 while (helpFile.hasNextLine()) {
                     System.out.println(helpFile.readLine());
                 }
+            } else if (cmd.equals("zipf")) {
+                int year = StdIn.readInt();
+                Plotter.plotZipfsLaw(ngm, year);
             } else if (cmd.equals("range")) {
                 try {
                     startYear = StdIn.readInt(); 
