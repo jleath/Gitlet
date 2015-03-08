@@ -126,6 +126,9 @@ public class NgordnetUI {
             } else if (cmd.equals("wordlength")) {
                 WordLengthProcessor wlp = new WordLengthProcessor();
                 Plotter.plotProcessedHistory(ngm, startYear, endYear, wlp);
+            } else if (cmd.equals("newwords")) {
+                NewWordProcessor nwp = new NewWordProcessor();
+                Plotter.plotProcessedHistory(ngm, startYear, endYear, nwp);
             }
         }
     }

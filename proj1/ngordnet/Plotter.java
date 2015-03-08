@@ -65,7 +65,7 @@ public class Plotter {
 
     public static void plotProcessedHistory(NGramMap ngm, int startYear,
             int endYear, YearlyRecordProcessor yrp) {
-        plotTS(ngm.processedHistory(startYear, endYear, yrp), "Average Word Length", "year", "length", "average");
+        plotTS(ngm.processedHistory(startYear, endYear, yrp), yrp.title(), yrp.ylabel(), yrp.xlabel(), yrp.legend());
     }
 
     public static void plotTS(TimeSeries<? extends Number> ts, String title,

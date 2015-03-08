@@ -10,4 +10,21 @@ public class WordLengthProcessor implements YearlyRecordProcessor {
         }
         return charCount / totalWords;
     }
+
+    public String title() {
+        return "Average Word Length";
+    }
+
+    public String xlabel() {
+        return "Year";
+    }
+
+    public String ylabel() {
+        return "Word Length";
+    }
+
+    public String legend() {
+        return "Average";
+    }
+
 }
