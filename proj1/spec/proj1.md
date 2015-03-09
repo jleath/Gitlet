@@ -69,7 +69,7 @@ A small subgraph of the WordNet Digraph is illustrated below. In our copy of the
 
 ![WordNet](wordnet-fig2.png "WordNet")
 
-A graph consists of a set of V vertices and E edges (represented by arrows in the above figure) between vertices. For example, in the graph above, V = 23 and E = 23. One of these edegs is from "increase" to "jump leap", indicating that the synset "increase" is a hypernym of "jump leap". 
+A graph consists of a set of V vertices and E edges (represented by arrows in the above figure) between vertices. For example, in the graph above, V = 23 and E = 23. One of these edges is from "increase" to "jump leap", indicating that the synset "increase" is a hypernym of "jump leap". 
 
 Your first task in this assignment is to read in the provided synset and hyponym datafiles (see further down on this page for the structure of the synset and hyponym files). To represent the arrows, we'll be using a class from the ```edu.princeton.cs.algs4``` package called Digraph (which you can import with ```edu.princeton.cs.algs4.Digraph```. You can think of this class as having only a constructor and an addEdge method (it actually has more, but you won't be using them directly, as you'll instead be relying on a provided GraphHelper class, described further below):
 
@@ -236,7 +236,7 @@ As with our other classes, see the [NGramMap (javadocs)](javadocs/index.html?ngo
 
 Revision (3/3/2015): Your code should be fast enough that you can create an NGramMap using all_words.csv. Loading should take less than 60 seconds (maybe a bit longer on an older computer).
 
-Hint (3/6/2015): Avoid using using HashMaps or TreeMaps as types for your maps. This gets messy, and I'd recommend using the TimeSeries and YearlyRecord classes instead. In other words, if your code looks like `HashMap<blah, HashMap<blah, blah>>`, then a YearlyRecord or TimeSeries might be in order instead.
+Hint (3/6/2015): Avoid using using a HashMap or TreeMap as an actual type parameter for your maps. This gets messy, and I'd recommend using the TimeSeries and YearlyRecord classes instead. In other words, if your code involves nested mapping that looks like `HashMap<blah, HashMap<blah, blah>>`, then a YearlyRecord or TimeSeries might be useful to keep in mind instead.
 
 The NGram Input File Formats
 ------
