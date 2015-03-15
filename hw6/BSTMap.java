@@ -1,104 +1,177 @@
 import java.util.Set;
-/** This BST will always have terminating nodes with null keys. */
+import java.util.HashSet;
+
 public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
-    private K key;
-    private V value;
-    private BSTMap<K, V> left;
-    private BSTMap<K, V> right;
+    private Node root;
 
-    private BSTMap(K key, V val, BSTMap<K, V> l, BSTMap<K, V> r) {
-        this.key = key;
-        value = val;
-        left = l;
-        right = r;
-    }
+    private class Node {
+        K label;
+        V value;
+        Node left;
+        Node right;
 
-    public BSTMap(K key, V val) {
-        this(key, val, null, null);
+        public Node(K k, V v) {
+            label = k;
+            value = v;
+            left = null;
+            right = null;
+        }
     }
 
     public BSTMap() {
-        this(null, null, null, null);
+        root = null;
     }
-    
+
+    public Node max() {
+        return max(root);
+    }
+
+    private Node max(Node x) {
+        if (x.right == null) {
+            return x;
+        }
+        return max(x.right);
+    }
+
+    public Node min() {
+        return min(root);
+    }
+
+    private Node min(Node x) {
+        if (x.left == null) {
+            return x;
+        }
+        return min(x.left);
+    }
+
     /** Removes all of the mappings from this map. */
     public void clear() {
-        key = null;
-        value = null;
-        left = null;
-        right = null;
+        root = null;
     }
 
     /** Returns true if this map contains a mapping for the specified key. */
     public boolean containsKey(K key) {
-        if (this.key == null) {
-            return false;
-        } else if (this.key.compareTo(key) == 0) {
-            return true;
-        } else {
-            return left.containsKey(key) || right.containsKey(key);
-        }
+        return get(key) != null;
     }
 
     /** Returns the value to which the specified key is mapped,
      *  or null if the map contains no mapping for the key. */
     public V get(K key) {
-        if (this.key.compareTo(key) == 0) {
-            return value;
-        } else if (this.key.compareTo(key) > 0 && left != null) {
-            return left.get(key);
-        } else if (this.key.compareTo(key) < 0 && right != null) {
-            return right.get(key);
-        } else {
+        return get(root, key);
+    }
+
+    private V get(Node x, K key) {
+        if (x == null) {
             return null;
+        }
+        int compKey = key.compareTo(root.label);
+        if (compKey == 0) {
+            return x.value;
+        } else if (compKey < 0) {
+            return get(x.left, key);
+        } else {
+            return get(x.right, key);
         }
     }
 
     /** Returns the number of key-value mappings in this map. */
     public int size() {
-        if (this.key == null) {
+        return size(root);
+    }
+
+    private int size(Node x) {
+        if (x == null) {
             return 0;
-        } else {
-            return 1 + left.size() + right.size();
         }
+        return 1 + size(x.left) + size(x.right);
     }
 
     /** Associates the specified value with the specified key in this map. */
     public void put(K key, V value) {
-        if (this.key == null) {
-            this.key = key;
-            this.value = value;
-            this.left = new BSTMap<K, V>();
-            this.right = new BSTMap<K, V>();
-        } else if (this.key.compareTo(key) == 0) {
-            return;
-        } else if (this.key.compareTo(key) < 0) {
-            right.put(key, value);
-        } else {
-            left.put(key, value);
+        root = put(root, key, value);
+    }
+
+    private Node put(Node x, K key, V value) {
+        if (x == null) {
+            return new Node(key, value);
         }
+        int compKey = key.compareTo(x.label);
+        if (compKey < 0) {
+            x.left = put(x.left, key, value);
+        } else if (compKey > 0) {
+            x.right = put(x.right, key, value);
+        }
+        return x;
     }
 
     public void printInOrder() {
-        if (this.key == null) {
+        printInOrder(root);
+    }
+
+    private void printInOrder(Node x) {
+        if (x == null) {
             return;
-        } else {
-            left.printInOrder();
-            System.out.println(key);
-            right.printInOrder();
         }
+        printInOrder(x.left);
+        System.out.println(x.label + ": " + x.value);
+        printInOrder(x.right);
     }
 
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        V result = get(key);
+        root = remove(root, key);
+        return result;
+    }
+
+    private Node remove(Node x, K key) {
+        if (x == null) {
+            return null;
+        }
+        int compKey = key.compareTo(x.label);
+        if (compKey < 0) {
+            x.left = remove(x.left, key);
+        } else if (compKey > 0) {
+            x.right = remove(x.right, key);
+        } else {
+            if (x.right == null) {
+                return x.left;
+            } else if (x.left == null) {
+                return x.right;
+            } else {
+                Node toRemove = findSuccessor(x);
+                x.label = toRemove.label;
+                x.value = toRemove.value;
+                x.right = remove(x.right, x.label);
+            }
+        }
+        return x;
+    }
+
+    private Node findSuccessor(Node x) {
+        return min(x.right);
     }
 
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        if (get(key) == value) {
+            return remove(key);
+        } else {
+            return null;
+        }
     }
 
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        HashSet<K> result = new HashSet<K>();
+        return keySet(result, root);
+    }
+
+    private Set<K> keySet(Set<K> result, Node x) {
+        if (x == null) {
+            return result;
+        }
+        result = keySet(result, x.left);
+        result.add(x.label);
+        result = keySet(result, x.right);
+        return result;
     }
 }

@@ -10,5 +10,24 @@ public class BSTMapTest {
         test.put(-5, -5);
         test.put(1000, 1000);
         test.printInOrder();
+        System.out.println("Removing -2");
+        test.remove(-2);
+        test.printInOrder();
+        test.remove(12);
+        System.out.println("Removing 12");
+        test.printInOrder();
+        test.remove(3);
+        System.out.println("Removing 3");
+        test.printInOrder();
+        test.put(55, 55);
+        test.put(152, 152);
+        test.put(32, 32);
+        test.remove(32);
+        System.out.println("Removing 32");
+        test.printInOrder();
+        for (int i : test.keySet()) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
     }
 }
