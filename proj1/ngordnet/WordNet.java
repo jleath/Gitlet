@@ -3,7 +3,6 @@ import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.introcs.In;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.ArrayList;
 import java.util.Set;
 
 /** An object that stores the WordNet graph in a manner useful for extracting

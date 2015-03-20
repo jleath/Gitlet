@@ -7,6 +7,10 @@ import edu.princeton.cs.introcs.In;
  * Google NGrams dataset (or a subset thereof); An NGramMap stores pertinent data
  * from a "words file" and a "counts file". It is not a map in the strict sense,
  * but it does provide additional functionality.
+ *
+ * This code has the same drawbacks as the HyponymParser class in that the files are
+ * read character-by-character rather than using the much neater split method.
+ *
  * @author Joshua Leath
  */
 
@@ -40,7 +44,8 @@ public class NGramMap {
             String word = wordBuilder.toString();
             curr = curr + 1;
             if (!wordCounts.containsKey(word)) {
-                wordCounts.put(word, new TimeSeries<Integer>());
+                // I am interning the words found in the words file to avoid storing duplicate strings.
+                wordCounts.put(word.intern(), new TimeSeries<Integer>());
             }
             int year = 0;
             while (line.charAt(curr) != '\t') {
@@ -57,11 +62,11 @@ public class NGramMap {
             wordCounts.get(word).put(year, count);
             if (yrMap.containsKey(year)) {
                 YearlyRecord yr = getRecord(year);
-                yr.put(word, count);
+                yr.put(word.intern(), count);
                 yrMap.put(year, yr);
             } else {
                 YearlyRecord yr = new YearlyRecord();
-                yr.put(word, count);
+                yr.put(word.intern(), count);
                 yrMap.put(year, yr);
             }
         }

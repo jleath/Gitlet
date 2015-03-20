@@ -11,14 +11,31 @@ import java.util.ArrayList;
  */
 
 public class YearlyRecord {
+
     /** A HashMap mapping counts to words. */
     private HashMap<Number, String> countBased;
+
+    /** An ordered hash map that maps words to counts. */
     private LinkedHashMap<String, Number> wordBased;
+
+    /** A HashMap that ranks words to their rank based on frequency.
+     *  Rank 1 is the most frequent and rank N is the least frequent where
+     *  N is the number of words. */
     private HashMap<String, Integer> ranking;
+    
+    /** A list for storing duplicate words found when reading in data.
+     *  This is so that we don't overwrite relevant data.  These words
+     *  are processed when the data is cached.  See the cache method. */
     private ArrayList<ExtraWord> duplicates;
+
+    /** The number of words found. */
     private int wordCount;
+
+    /** A flag to represent whether the data has been cached or not.
+     *  See the cache method. */
     private boolean cached;
 
+    /** A nested class to temporarily store duplicate words and their counts. */
     private class ExtraWord {
         private Number count;
         private String word;
@@ -39,14 +56,17 @@ public class YearlyRecord {
         duplicates = new ArrayList<ExtraWord>();
     }
 
+    /** A utility method to help improve the performance of this class, words are not 
+     *  sorted or ranked until this method is called.  This method will be called anytime
+     *  there is data that has not been cached and some processing needs to occur. */
     public void cache() {
         TreeSet<Number> sortedCounts = new TreeSet<Number>(countBased.keySet());
         ArrayList<ExtraWord> toRemove = new ArrayList<ExtraWord>();
         for (Number n : sortedCounts) {
-            wordBased.put(countBased.get(n), n);
+            wordBased.put(countBased.get(n).intern(), n);
             for (ExtraWord extra : duplicates) {
                 if (n.equals(extra.count)) {
-                    wordBased.put(extra.word, n);
+                    wordBased.put(extra.word.intern(), n);
                     toRemove.add(extra);
                 }
             }
@@ -58,7 +78,7 @@ public class YearlyRecord {
         int totalSize = wordBased.size();
         int i = totalSize;
         for (String word : wordBased.keySet()) {
-            ranking.put(word, i);
+            ranking.put(word.intern(), i);
             i = i - 1;
         }
         countBased.clear();
@@ -69,7 +89,7 @@ public class YearlyRecord {
     public YearlyRecord(HashMap<String, Integer> otherCountMap) {
         this();
         for (String s : otherCountMap.keySet()) {
-            put(s, otherCountMap.get(s));
+            put(s.intern(), otherCountMap.get(s));
         }
     }
 
@@ -98,13 +118,13 @@ public class YearlyRecord {
     /** Records that WORD occured COUNT times in this year. */
     public void put(String word, int count) {
         if (countBased.containsKey(count)) {
-            duplicates.add(new ExtraWord(count, word));
+            duplicates.add(new ExtraWord(count, word.intern()));
             wordCount = wordCount + 1;
             return;
         }
         wordCount = wordCount + 1;
         cached = false;
-        countBased.put(count, word);
+        countBased.put(count, word.intern());
     }
 
     /** Returns rank of WORD. */

@@ -29,6 +29,8 @@ public class Asymptotics {
                     break;
                 case 5: function5(arg);
                     break;
+                case 6: function6(arg);
+                    break;
                 default: usage();
                         return;
                 }
@@ -38,6 +40,15 @@ public class Asymptotics {
             }
         } else {
             usage();
+        }
+    }
+
+    public static void function6(long n) {
+        for (long i = 0; i < n; i++) {
+            long j = i * i;
+            while (j <= n) {
+                j += 1;
+            }
         }
     }
 
@@ -76,13 +87,28 @@ public class Asymptotics {
     /** Fill in the body of this function so that its running time is
      *  n^(1/2) and so that it returns true if and only if n is prime. */
     public static boolean function4(long n) {
-	return false; //FIX ME
+        for (long i = 2; i <= Math.sqrt(n); i++) {
+            if (n % i == 0) {
+                System.out.println("False");
+                return false;
+            }
+        }
+        System.out.println("True");
+        return true;
     }
 
     /** Fill in the body of this function so that its best case running
      *  time is log(n) and its worst case running time is n. */
     public static void function5(long n) {
-        //FILL ME IN
+        if (n % 2 == 0) {
+            while (n > 0) {
+                n = n / 2;
+            }
+        } else {
+            while (n > 0) {
+                n = n - 1;
+            }
+        }
     }
 
     public static void usage() {

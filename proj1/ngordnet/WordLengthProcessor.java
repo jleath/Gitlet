@@ -1,6 +1,13 @@
 package ngordnet;
 
+/** This class provides a process method that returns the average
+ *  word length for a given year.
+ *  @author Joshua Leath
+ */
+
 public class WordLengthProcessor implements YearlyRecordProcessor {
+    
+    /** Returns the average word length for a given YearlyRecord YR. */
     public double process(YearlyRecord yr) {
         long totalWords = 0;
         long charCount = 0; 
@@ -10,6 +17,8 @@ public class WordLengthProcessor implements YearlyRecordProcessor {
         }
         return charCount / totalWords;
     }
+
+    /** Utility methods for getting relevant data for xChart. */
 
     public String title() {
         return "Average Word Length";

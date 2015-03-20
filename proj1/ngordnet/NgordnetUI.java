@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.ArrayList;
 
 /** Provides a simple user interface for exploring WordNet and NGram data.
+ *  This code is rather awful and needs to be cleaned up.
  *  @author Joshua Leath
  */
 public class NgordnetUI {
@@ -18,6 +19,7 @@ public class NgordnetUI {
         String countFile = in.readString();
         String synsetFile = in.readString();
         String hyponymFile = in.readString();
+        String prompt = "> ";
         WordNet wn = new WordNet(synsetFile, hyponymFile);
         NGramMap ngm = new NGramMap(wordFile, countFile);
 
@@ -28,11 +30,14 @@ public class NgordnetUI {
                            + wordFile + ", " + countFile + ", " + synsetFile +
                            ", and " + hyponymFile + ".");
 
-        System.out.println("\nFor tips on implementing NgordnetUI, see ExampleUI.java.");
+        System.out.println("\nFor a listing of commands, type help.");
+        
         while (true) {
-            System.out.print("> ");
+            // Get the user's commands.
+            System.out.print(prompt);
             String cmd = "";
             cmd = StdIn.readString();
+
             if (cmd.equals("")) {
                 continue;
             } else if (cmd.equals("quit")) {
