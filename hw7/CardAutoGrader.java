@@ -1,13 +1,13 @@
 import static org.junit.Assert.*;
 import java.util.ArrayList;
 import org.junit.Test;
-import jh61b.grader.Test61B;
+// import jh61b.grader.Test61B;
 
 // VERSION 2
 /* This file is identical to the Autograder except that it commented out 
  * a few things that were causing errors on students' computers. */
 
-public class CardAutoGrader extends jh61b.grader.Autograder {
+public class CardAutoGrader /*extends jh61b.grader.Autograder*/ {
 
     // @Test61B(name = "Card Perfect Hash Check")
     public static void testHashCodes() {
