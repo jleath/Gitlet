@@ -11,8 +11,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Scanner;
 import java.io.BufferedWriter;
+import java.io.PrintWriter;
 import java.io.FileWriter;
 import java.io.FileNotFoundException;
+import java.util.NoSuchElementException;
 
 /** This is a utility class with static methods for working with
  *  files and GitletObjects.
@@ -130,6 +132,35 @@ public final class ObjectManager {
         }
         return result;
     }
+
+    /** Gets the current branch. */
+    public static String getCurrentBranch() {
+        String name = null;
+        try {
+            File file = new File("./.gitlet/HEAD");
+            Scanner in = new Scanner(file);
+            name = in.next();
+            in.close();
+        } catch (IllegalStateException e) {
+            System.out.println("Error reading HEAD file.");
+        } catch (FileNotFoundException e) {
+            System.out.println("HEAD file does not exist.");
+        }
+        return name;
+    }
+
+    /** Sets the name of the current branch.  This name is located in the file
+     *  found at './gitlet/HEAD'. */
+    public static void setCurrentBranch(String b) {
+        try {
+            File file = new File("./.gitlet/HEAD");
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+            out.print(b);
+            out.close();
+        } catch (IOException e) {
+            System.out.println("Error writing to HEAD file.");
+        }
+    }
     
     /** Caches a branch, saving it as a file in the 'branches' directory
      *  named after the branch containing only the id of the branches head
@@ -137,12 +168,35 @@ public final class ObjectManager {
     public static void cacheBranch(Branch b) {
         try {
             File file = new File("./.gitlet/branches/" + b.getName());
-            BufferedWriter out = new BufferedWriter(new FileWriter(file));
-            out.write(b.getCommitId());
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+            out.print(b.getCommitId());
             out.close();
         } catch (IOException e) {
             System.out.println("Error writing branch file for " + b.getName());
         }
+    }
+
+    public static void cacheCurrentCommit(int id) {
+        try {
+            File file = new File("./.gitlet/CURR");
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+            out.print(id);
+            out.close();
+        } catch (IOException e) {
+            System.out.println("Error writing current commit");
+        }
+    }
+
+    public static int getIdOfCurrentCommit() {
+        int commitId = -1;
+        try {
+            File file = new File("./.gitlet/CURR");
+            Scanner in = new Scanner(file);
+            commitId = in.nextInt();
+        } catch (IOException e) {
+            System.out.println("Error reading CURR file.");
+        }
+        return commitId;
     }
 
     public static Commit getHeadOfBranch(String name) {

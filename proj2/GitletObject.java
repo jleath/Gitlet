@@ -71,6 +71,11 @@ public class GitletObject implements Serializable {
         return markedForRemove;
     }
 
+    /** Updates the gitlet object to correctly store the committal date. */
+    public void update() {
+        setCommitDate(new Date());
+    }
+
     /** Returns the date that this object was last committed,
      *  returns null if it has not been committed before. */
     public Date lastCommitDate() {

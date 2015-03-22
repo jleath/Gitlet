@@ -32,11 +32,39 @@ public class Commit implements Serializable {
     public Commit(int p) {
         parentId = p;
         objects = new HashMap<String, GitletObject>();
-        Commit parent = ObjectManager.loadCommit(parentId);
-        objects.putAll(parent.objects);
         commitDate = null;
         message = null;
         id = ObjectManager.numFilesInDir(".gitlet/commits");
+        Commit parent = ObjectManager.loadCommit(parentId);
+        if (parent != null) {
+            for (String s : parent.objects.keySet()) {
+                GitletObject curr = parent.objects.get(s);
+                if (!curr.isMarkedForRemoval()) {
+                    objects.put(s, curr);
+                }
+            }
+        }
+    }
+
+    /** Add a commit C to the repo, copies files from the working
+     *  directory, updates the branch pointer to point to C, and
+     *  creates a new current commit. */
+    public void push(String message) {
+        for (GitletObject go : getStagedFiles()) {
+            ObjectManager.commitObject(go);
+            System.out.println("Commited: " + go.getFileName());
+            go.update();
+            objects.put(go.getFileName(), go);
+        }
+        setCommitDate(new Date());
+        setMessage(message);
+        ObjectManager.storeCommit(this);
+        Commit newCommit = new Commit(getId());
+        String b = ObjectManager.getCurrentBranch();
+        System.out.println("CURR: " + b);
+        ObjectManager.cacheBranch(new Branch(b, getId()));
+        ObjectManager.storeCommit(newCommit);
+        ObjectManager.cacheCurrentCommit(newCommit.getId());
     }
 
     /** Marks the file named FILENAME for committal with this commit.
@@ -48,16 +76,18 @@ public class Commit implements Serializable {
         if (objects.containsKey(fileName)) {
             GitletObject lastCommit = objects.get(fileName);
             Date lastMod = ObjectManager.getLastModifiedDate(fileName);
-            if (lastMod.before(lastCommit.lastCommitDate())) {
+            Date commitDate = lastCommit.lastCommitDate();
+            if (commitDate != null && lastMod.before(commitDate)) {
                 System.out.println("The file + " + fileName + " has not been"
                         + " modified since the last commit.");
                 return;
             }
-            int nextId = ObjectManager.numFilesInDir(".gitlet/obj");
-            GitletObject newObj = new GitletObject(fileName, nextId);
-            newObj.stage();
-            objects.put(fileName, newObj);
         }
+        int nextId = ObjectManager.numFilesInDir(".gitlet/obj");
+        GitletObject newObj = new GitletObject(fileName, nextId);
+        newObj.stage();
+        objects.put(fileName, newObj);
+        System.out.println("Staged file: " + fileName);
     }
 
     /** Marks a file in a commit for removal.  When the commit is pushed,
@@ -71,6 +101,7 @@ public class Commit implements Serializable {
             toRemove.unstage();
             toRemove.markForRemoval();
             objects.put(fileName, toRemove);
+            System.out.println("Marked for removal: " + fileName);
         }
         else {
             System.out.println("The file " + fileName + " has not been"
@@ -149,5 +180,10 @@ public class Commit implements Serializable {
     /** Returns the id of this commit. */
     public int getId() {
         return id;
+    }
+
+    /** Returns the parent id of this commit. */
+    public int getParentId() {
+        return parentId;
     }
 }
