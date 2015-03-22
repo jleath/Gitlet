@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.Scanner;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 
 /** This is a utility class with static methods for working with
@@ -86,6 +87,13 @@ public final class ObjectManager {
         }
     }
 
+    /** Returns true if there is a commit with the given ID in the
+     *  commits directory, else false. */
+    public static boolean commitExists(int id) {
+        File commit = new File("./.gitlet/obj/" + id + ".go");
+        return commit.exists();
+    }
+
     /** Returns a Date object representing the date that a file
      *  was last modified. */
     public static Date getLastModifiedDate(String fileName) {
@@ -137,12 +145,45 @@ public final class ObjectManager {
     public static void cacheBranch(Branch b) {
         try {
             File file = new File("./.gitlet/branches/" + b.getName());
-            BufferedWriter out = new BufferedWriter(new FileWriter(file));
-            out.write(b.getCommitId());
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+            out.print(b.getCommitId());
             out.close();
         } catch (IOException e) {
             System.out.println("Error writing branch file for " + b.getName());
         }
+    }
+
+    /** Creates a file that stores the repo's current branch.  This file will
+    *  always be named 'HEAD' and will contain the name of the current branch. */
+    public static void setCurrentBranch(String b) {
+        if (!Files.exists(Paths.get("./.gitlet/HEAD"))) {
+            try {
+                Files.createFile(Paths.get("./.gitlet/HEAD"));
+            } catch (IOException e) {
+                System.out.println("Error creating new HEAD file.");
+            }
+        }
+        try {
+            File file = new File("./.gitlet/HEAD");
+            BufferedWriter out = new BufferedWriter(new FileWriter(file));
+            out.write(b);
+            out.close();
+        } catch (IOException e) {
+            System.out.println("Error setting the current branch to " + b);
+        }
+    }
+
+    /** Returns the name of the current branch. */
+    public static String getCurrentBranch() {
+        File file = new File("./.gitlet/HEAD");
+        String branchName = null;
+        try {
+            Scanner scanner = new Scanner(file);
+            branchName = scanner.next();
+        } catch (FileNotFoundException e) {
+            System.out.println("Error getting the name of the current branch.");
+        }
+        return branchName;
     }
 
     public static Commit getHeadOfBranch(String name) {

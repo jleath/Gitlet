@@ -32,8 +32,15 @@ public class Commit implements Serializable {
     public Commit(int p) {
         parentId = p;
         objects = new HashMap<String, GitletObject>();
-        Commit parent = ObjectManager.loadCommit(parentId);
-        objects.putAll(parent.objects);
+        if (ObjectManager.commitExists(parentId)) {
+            Commit parent = ObjectManager.loadCommit(parentId);
+            for (String name : parent.objects.keySet()) {
+                GitletObject go = parent.objects.get(name);
+                if (!go.isMarkedForRemoval()) {
+                    objects.put(name, go);
+                }
+            }
+        }
         commitDate = null;
         message = null;
         id = ObjectManager.numFilesInDir(".gitlet/commits");
@@ -49,15 +56,20 @@ public class Commit implements Serializable {
             GitletObject lastCommit = objects.get(fileName);
             Date lastMod = ObjectManager.getLastModifiedDate(fileName);
             if (lastMod.before(lastCommit.lastCommitDate())) {
-                System.out.println("The file + " + fileName + " has not been"
+                System.out.println("The file " + fileName + " has not been"
                         + " modified since the last commit.");
                 return;
             }
-            int nextId = ObjectManager.numFilesInDir(".gitlet/obj");
-            GitletObject newObj = new GitletObject(fileName, nextId);
-            newObj.stage();
-            objects.put(fileName, newObj);
         }
+        int nextId = ObjectManager.numFilesInDir(".gitlet/obj");
+        GitletObject newObj = new GitletObject(fileName, nextId);
+        newObj.stage();
+        objects.put(fileName, newObj);
+    }
+
+    public void updateCommitDate(GitletObject go) {
+        go.setCommitDate(new Date());
+        objects.put(go.getFileName(), go);
     }
 
     /** Marks a file in a commit for removal.  When the commit is pushed,
@@ -149,5 +161,10 @@ public class Commit implements Serializable {
     /** Returns the id of this commit. */
     public int getId() {
         return id;
+    }
+
+    /** Returns the id of this commit's parent. */
+    public int getParentId() {
+        return parentId;
     }
 }
