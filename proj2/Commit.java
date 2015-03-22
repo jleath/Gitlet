@@ -67,6 +67,7 @@ public class Commit implements Serializable {
         objects.put(fileName, newObj);
     }
 
+    /** Change the commitDate of GO to the current date. */
     public void updateCommitDate(GitletObject go) {
         go.setCommitDate(new Date());
         objects.put(go.getFileName(), go);

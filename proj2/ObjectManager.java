@@ -32,7 +32,22 @@ import java.io.FileNotFoundException;
  *  @author Joshua Leath
  */
 public final class ObjectManager {
+    private static final String sep = File.pathSeparator;
+    private static final String repoRoot = "./.gitlet/";
+    private static final String objDir = repoRoot + "obj/";
+    private static final String objectSuffix = ".go";
+    private static final String commitDir = repoRoot + "commits/";
+    private static final String commitSuffix = ".co";
+    private static final String branchDir = repoRoot + "branches/";
+    private static final String branchSuffix = ".br";
+    private static final String headFile = repoRoot + "HEAD";
+    
 
+    /** Returns true if the branch named BRANCHNAME exists. */
+    public static boolean branchExists(String branchName) {
+        File branchFile = new File(branchDir + branchName + branchSuffix);
+        return branchFile.exists();
+    }
     /** Returns the number of files in the given directory DIR. */
     public static int numFilesInDir(String dirPath) {
         return new File(dirPath).list().length;
@@ -54,7 +69,7 @@ public final class ObjectManager {
      *  with ID as the filename. */
     public static void cacheNewFile(String fileName, int id) {
         File toCache = new File(fileName);
-        File dest = new File("./.gitlet/obj/" + id + ".go");
+        File dest = new File(objDir + id + objectSuffix);
         if (!toCache.exists()) {
             System.out.println("File " + fileName + " does not exist.");
         } else if (dest.exists()) {
@@ -62,7 +77,7 @@ public final class ObjectManager {
         } else {
             try {
                 Files.copy(Paths.get(fileName), 
-                        Paths.get("./.gitlet/obj/" + id + ".go"));
+                        Paths.get(objDir + id + objectSuffix));
             } catch (IOException e) {
                 System.out.println("Error making backup of " + fileName);
             }
@@ -72,13 +87,13 @@ public final class ObjectManager {
     /** Copies the file with the given ID in the 'objects'
      *  directory to the path given by FILENAME. */
     public static void copyToWorkingDirectory(int id, String fileName) {
-        File toCopy = new File("./.gitlet/obj/" + id + ".go");
+        File toCopy = new File(objDir + id + objectSuffix);
         File dest = new File(fileName);
         if (!toCopy.exists()) {
             System.out.println("File " + fileName + " does not exist.");
         } else {
             try {
-                Files.copy(Paths.get("./.gitlet/obj/" + id + ".go"), 
+                Files.copy(Paths.get(objDir+ id + objectSuffix), 
                         Paths.get(fileName), REPLACE_EXISTING);
             } catch (IOException e) {
                 System.out.println("Error pulling object " + id
@@ -90,7 +105,7 @@ public final class ObjectManager {
     /** Returns true if there is a commit with the given ID in the
      *  commits directory, else false. */
     public static boolean commitExists(int id) {
-        File commit = new File("./.gitlet/obj/" + id + ".go");
+        File commit = new File(objDir + id + objectSuffix);
         return commit.exists();
     }
 
@@ -108,7 +123,7 @@ public final class ObjectManager {
             return;
         }
         try {
-            String destName = ".gitlet/commits/" + obj.getId();
+            String destName = commitDir + obj.getId() + commitSuffix;
             File destFile = new File(destName);
             FileOutputStream fileOut = new FileOutputStream(destFile);
             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
@@ -117,13 +132,50 @@ public final class ObjectManager {
             System.out.println("Error serializing object.");
         }
     }
-    
 
+    /** Caches a special commit that is not yet a part of the commit tree.
+     *  It is the commit that the user is currently working with to stage
+     *  files and/or mark them for removal. */
+    public static void cacheCurrentCommit(Commit curr) {
+        if (curr == null) {
+            System.out.println("There is no current commit.");
+            return;
+        }
+        try {
+            String destName = repoRoot + "CURR";
+            File destFile = new File(destName);
+            FileOutputStream fileOut = new FileOutputStream(destFile);
+            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+            objectOut.writeObject(curr);
+        } catch (IOException e) {
+            System.out.println("Error serializing object.");
+        }
+    }
+
+    /** Loads the current commit. */
+    public static Commit loadCurrentCommit() {
+        Commit result = null;
+        String fileName = repoRoot + "CURR";
+        File src = new File(fileName);
+        if (src.exists()) {
+            try {
+                FileInputStream fileIn = new FileInputStream(src);
+                ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+                result = (Commit) objectIn.readObject();
+            } catch (IOException e) {
+                System.out.println("Error reading " + fileName);
+            } catch (ClassNotFoundException e) {
+                System.out.println("Error loading Commit.");
+            }
+        }
+        return result;
+    }
+    
     /** A utility method for reading in a serialized object,
      *  returns null if there is no file with the name FILENAME. */
     public static Commit loadCommit(int id) {
         Commit result = null;
-        String fileName = ".gitlet/commits/" + id;
+        String fileName = commitDir + id + commitSuffix;
         File src = new File(fileName);
         if (src.exists()) {
             try {
@@ -144,7 +196,7 @@ public final class ObjectManager {
      *  commit. */
     public static void cacheBranch(Branch b) {
         try {
-            File file = new File("./.gitlet/branches/" + b.getName());
+            File file = new File(branchDir + b.getName() + branchSuffix);
             PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
             out.print(b.getCommitId());
             out.close();
@@ -156,15 +208,15 @@ public final class ObjectManager {
     /** Creates a file that stores the repo's current branch.  This file will
     *  always be named 'HEAD' and will contain the name of the current branch. */
     public static void setCurrentBranch(String b) {
-        if (!Files.exists(Paths.get("./.gitlet/HEAD"))) {
+        if (!Files.exists(Paths.get(headFile))) {
             try {
-                Files.createFile(Paths.get("./.gitlet/HEAD"));
+                Files.createFile(Paths.get(headFile));
             } catch (IOException e) {
                 System.out.println("Error creating new HEAD file.");
             }
         }
         try {
-            File file = new File("./.gitlet/HEAD");
+            File file = new File(headFile);
             BufferedWriter out = new BufferedWriter(new FileWriter(file));
             out.write(b);
             out.close();
@@ -175,7 +227,7 @@ public final class ObjectManager {
 
     /** Returns the name of the current branch. */
     public static String getCurrentBranch() {
-        File file = new File("./.gitlet/HEAD");
+        File file = new File(headFile);
         String branchName = null;
         try {
             Scanner scanner = new Scanner(file);
@@ -188,7 +240,7 @@ public final class ObjectManager {
 
     public static Commit getHeadOfBranch(String name) {
         Commit result = null;
-        File file = new File("./.gitlet/branches/" + name); 
+        File file = new File(branchDir + name + branchSuffix); 
         try {
             Scanner scanner = new Scanner(file);
             int commitId = scanner.nextInt();
