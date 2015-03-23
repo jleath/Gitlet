@@ -35,11 +35,12 @@ public class Commit implements Serializable {
         commitDate = null;
         message = null;
         id = ObjectManager.numFilesInDir(".gitlet/commits");
-        Commit parent = ObjectManager.loadCommit(parentId);
+        Commit parent = CommitHandler.loadCommit(parentId);
         if (parent != null) {
             for (String s : parent.objects.keySet()) {
                 GitletObject curr = parent.objects.get(s);
                 if (!curr.isMarkedForRemoval()) {
+                    curr.unstage();
                     objects.put(s, curr);
                 }
             }
@@ -51,20 +52,19 @@ public class Commit implements Serializable {
      *  creates a new current commit. */
     public void push(String message) {
         for (GitletObject go : getStagedFiles()) {
-            ObjectManager.commitObject(go);
-            System.out.println("Commited: " + go.getFileName());
+            CommitHandler.commitObject(go);
+            System.out.println("Pushed file: " + go.getFileName());
             go.update();
             objects.put(go.getFileName(), go);
         }
         setCommitDate(new Date());
         setMessage(message);
-        ObjectManager.storeCommit(this);
+        CommitHandler.storeCommit(this);
         Commit newCommit = new Commit(getId());
-        String b = ObjectManager.getCurrentBranch();
-        System.out.println("CURR: " + b);
-        ObjectManager.cacheBranch(new Branch(b, getId()));
-        ObjectManager.storeCommit(newCommit);
-        ObjectManager.cacheCurrentCommit(newCommit.getId());
+        String b = BranchHandler.getCurrentBranch();
+        BranchHandler.cacheBranch(new Branch(b, getId()));
+        CommitHandler.storeCommit(newCommit);
+        CommitHandler.cacheCurrentCommit(newCommit.getId());
     }
 
     /** Marks the file named FILENAME for committal with this commit.
@@ -117,6 +117,19 @@ public class Commit implements Serializable {
             GitletObject curr = objects.get(name);
             if (curr.isStaged()) {
                 result.add(curr);
+            }
+        }
+        return result;
+    }
+
+    /** Returns a collection of all the files in this commit
+     *  but those that have been marked for removal. */
+    public Collection<GitletObject> getAllButRemoved() {
+        HashSet<GitletObject> result = new HashSet<GitletObject>();
+        for (String name : objects.keySet()) {
+            GitletObject curr = objects.get(name);
+            if (!(curr.isMarkedForRemoval())) {
+                result.add(curr); 
             }
         }
         return result;
@@ -185,5 +198,10 @@ public class Commit implements Serializable {
     /** Returns the parent id of this commit. */
     public int getParentId() {
         return parentId;
+    }
+
+    /** Set this commit to point to the commit with id number ID. */
+    public void setParentId(int id) {
+        parentId = id;
     }
 }
