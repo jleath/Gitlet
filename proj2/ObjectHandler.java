@@ -65,6 +65,23 @@ public final class ObjectHandler {
         }
     }
 
+    /** Stores a backup of a conflicted file during a branch merge in the
+     *  '.gitlet/obj/' directory as [fileName].conflicted. */
+    public static void cacheConflictedFile(String fileName, int id) {
+        File toCache = new File(fileName);
+        File dest = new File("./.gitlet/obj/" + fileName + ".conflicted");
+        if (!toCache.exists()) {
+            System.out.println("File " + fileName + " does not exist.");
+        } else {
+            try {
+                Files.copy(Paths.get("./.gitlet/obj/" + id + ".go"),
+                        Paths.get("./.gitlet/obj/" + fileName + ".conflicted"));
+            } catch (IOException e) {
+                System.out.println("Error making backup of " + fileName);
+            }
+        }
+    }
+
     /** Copies the file with the given ID in the 'objects'
      *  directory to the path given by FILENAME. */
     public static void copyToWorkingDirectory(int id, String fileName) {

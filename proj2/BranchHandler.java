@@ -16,6 +16,21 @@ import java.nio.file.NoSuchFileException;
  *  @author Joshua Leath
  */
 public final class BranchHandler {
+
+    /** Returns a Collection of the names of modified files between the head commit 
+     * and split point of the branch named BRANCHNAME. */
+    public static Collection<String> getModifiedFiles(String branchName) {
+        int stopId = getSplitPointId(branchName);
+        Commit branchHead = getHeadOfBranch(branchName);
+        HashSet<String> result = new HashSet<String>();
+        while (!(branchHead.getMessage().equals("initial commit")) && branchHead.getId() != stopId) {
+            for (GitletObject go : branchHead.getStagedFiles()) {
+                result.add(go.getFileName());
+            }
+            branchHead = CommitHandler.loadCommit(branchHead.getParentId());
+        }
+        return result;
+    }
     
     /** Sets the name of the current branch. This name is located in the file
      *  found at '.gitlet/HEAD'. */
@@ -98,7 +113,6 @@ public final class BranchHandler {
         } catch (IOException e) {
             System.out.println("Error writing branch file for " + b.getName());
         }
-        cacheSplitPoint(b);
     }
 
     /** Caches the splitPoint of the given branch in a file named

@@ -47,7 +47,7 @@ public class Commit implements Serializable {
             for (String s : parent.objects.keySet()) {
                 GitletObject curr = parent.objects.get(s);
                 if (!curr.isMarkedForRemoval()) {
-                    curr.unstage();
+                    GitletObject newCurr = new GitletObject(curr.getFileName(), curr.getId());
                     objects.put(s, curr);
                 }
             }

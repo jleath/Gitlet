@@ -2,6 +2,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.Collection;
 
 /** The user interface for Gitlet, run Gitlet with the help command for more
  *  information.
@@ -81,7 +82,9 @@ public class Gitlet {
                 System.out.println("A branch with that name already exists.");
             } else {
                 int commitId = BranchHandler.getIdOfHeadCommit();
-                BranchHandler.cacheBranch(new Branch(args[1], commitId));
+                Branch nb = new Branch(args[1], commitId);
+                BranchHandler.cacheBranch(nb);
+                BranchHandler.cacheSplitPoint(nb);
             }
 
         } else if (command.equals("status")) {
@@ -97,14 +100,47 @@ public class Gitlet {
         } else if (command.equals("reset")) {
             if (args.length < 2) {
                 System.out.println("You must specify a commit id.");
-            }
-            int commitId = Integer.parseInt(args[1]);
-            warnUser();
-            if (CommitHandler.commitExists(commitId)) {
-                Commit c = CommitHandler.loadCommit(commitId);
-                CommitHandler.revertToCommit(c);
             } else {
-                System.out.println("No commit with that idea exists.");
+                int commitId = Integer.parseInt(args[1]);
+                warnUser();
+                if (CommitHandler.commitExists(commitId)) {
+                    Commit c = CommitHandler.loadCommit(commitId);
+                    CommitHandler.revertToCommit(c);
+                } else {
+                    System.out.println("No commit with that idea exists.");
+                }
+            }
+
+        } else if (command.equals("merge")) {
+            if (args.length < 2) {
+                System.out.println("You must specify a branch to merge.");
+            } else {
+                String givenName = args[1];
+                if (!(BranchHandler.branchExists(givenName))) {
+                    System.out.println("No branch with that name exists.");
+                } else if (givenName.equals(BranchHandler.getCurrentBranch())) {
+                    System.out.println("Cannot merge a branch into itself.");
+                } else {
+                    warnUser();
+                    merge(givenName, BranchHandler.getCurrentBranch());
+                }
+            }
+        }
+    }
+
+    /** Merges GIVENBRANCH into CURRENTBRANCH. */
+    private static void merge(String givenBranch, String currentBranch) {
+        Commit givenHead = BranchHandler.getHeadOfBranch(givenBranch);
+        Commit currentHead = BranchHandler.getHeadOfBranch(currentBranch);
+        Collection<String> givenFiles = BranchHandler.getModifiedFiles(givenBranch);
+        Collection<String> currentFiles = BranchHandler.getModifiedFiles(currentBranch);
+        for (String fileName : givenFiles) {
+            if (!(currentFiles.contains(fileName))) {
+                ObjectHandler.pullFile(givenHead.getObject(fileName));
+            } else {
+                System.out.println("Conflicting file during merge: " + fileName);
+                GitletObject conflict = givenHead.getObject(fileName);
+                ObjectHandler.cacheConflictedFile(conflict.getFileName(), conflict.getId());
             }
         }
     }
@@ -187,6 +223,7 @@ public class Gitlet {
         Branch master = new Branch("master", defaultCom.getId());
         BranchHandler.cacheBranch(master);
         BranchHandler.setCurrentBranch("master");
+        BranchHandler.cacheSplitPoint(master);
         defaultCom.push("initial commit");
         System.out.println("Gitlet repo initialized!");
     }
@@ -198,6 +235,7 @@ public class Gitlet {
             Files.createDirectory(Paths.get("./.gitlet/obj"));
             Files.createDirectory(Paths.get("./.gitlet/branches"));
             Files.createDirectory(Paths.get("./.gitlet/commits"));
+            Files.createDirectory(Paths.get("./.gitlet/splits"));
         } catch (IOException e) {
             System.out.println("Error creating gitlet repo directories.");
         }
