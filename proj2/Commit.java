@@ -34,8 +34,15 @@ public class Commit implements Serializable {
         objects = new HashMap<String, GitletObject>();
         commitDate = null;
         message = null;
-        id = ObjectManager.numFilesInDir(".gitlet/commits");
+        id = ObjectHandler.numFilesInDir(".gitlet/commits");
         Commit parent = CommitHandler.loadCommit(parentId);
+        inheritFiles(parent);
+    }
+    
+    /** A commit starts off with all of the same files as its parent,
+     *  this copies all the GitletObjects that have not been marked for removal
+     *  into this commit. */
+    public void inheritFiles(Commit parent) {
         if (parent != null) {
             for (String s : parent.objects.keySet()) {
                 GitletObject curr = parent.objects.get(s);
@@ -62,9 +69,9 @@ public class Commit implements Serializable {
         CommitHandler.storeCommit(this);
         Commit newCommit = new Commit(getId());
         String b = BranchHandler.getCurrentBranch();
-        BranchHandler.cacheBranch(new Branch(b, getId()));
         CommitHandler.storeCommit(newCommit);
         CommitHandler.cacheCurrentCommit(newCommit.getId());
+        BranchHandler.cacheBranch(new Branch(b, getId())); 
     }
 
     /** Marks the file named FILENAME for committal with this commit.
@@ -75,7 +82,7 @@ public class Commit implements Serializable {
         // If this fileName is already found in this commit.
         if (objects.containsKey(fileName)) {
             GitletObject lastCommit = objects.get(fileName);
-            Date lastMod = ObjectManager.getLastModifiedDate(fileName);
+            Date lastMod = ObjectHandler.getLastModifiedDate(fileName);
             Date commitDate = lastCommit.lastCommitDate();
             if (commitDate != null && lastMod.before(commitDate)) {
                 System.out.println("The file + " + fileName + " has not been"
@@ -83,7 +90,7 @@ public class Commit implements Serializable {
                 return;
             }
         }
-        int nextId = ObjectManager.numFilesInDir(".gitlet/obj");
+        int nextId = ObjectHandler.numFilesInDir(".gitlet/obj");
         GitletObject newObj = new GitletObject(fileName, nextId);
         newObj.stage();
         objects.put(fileName, newObj);

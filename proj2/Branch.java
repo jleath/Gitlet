@@ -9,7 +9,9 @@
  *  @author Joshua Leath
  */
 public class Branch {
+    /** The id of the head commit of this branch. */
     private int commitId;
+    /** The name of this branch. */
     private String branchName;
 
     public Branch(String name, int commitId) {
@@ -21,14 +23,18 @@ public class Branch {
         this(name, 0);
     }
 
+    /** Sets the head commit of this branch to be the commit with
+     *  id number ID. */
     public void setCommitId(int id) {
         commitId = id;
     }
 
+    /** Returns the commit id of the head of this branch. */
     public int getCommitId() {
         return commitId;
     }
 
+    /** Return the name of this branch. */
     public String getName() {
         return branchName;
     }

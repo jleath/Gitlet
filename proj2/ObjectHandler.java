@@ -42,7 +42,7 @@ public final class ObjectHandler {
     /** Overwrite the GitletObject OBJ's associated file with the content
      *  that the file had at the time OBJ was commited. */
     public static void pullFile(GitletObject obj) {
-        ObjectManager.copyToWorkingDirectory(obj.getId(), obj.getFileName());
+        ObjectHandler.copyToWorkingDirectory(obj.getId(), obj.getFileName());
     }
 
     /** Stores a backup of the file with the name FILENAME,

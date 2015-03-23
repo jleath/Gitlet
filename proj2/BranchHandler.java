@@ -9,7 +9,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.nio.file.NoSuchFileException;
 
+/** A class of static utility methods for dealing with branches in a gitlet repo.
+ *
+ *  @author Joshua Leath
+ */
 public final class BranchHandler {
     
     /** Sets the name of the current branch. This name is located in the file
@@ -22,6 +27,21 @@ public final class BranchHandler {
             out.close();
         } catch (IOException e) {
             System.out.println("Error writing to HEAD file.");
+        }
+    }
+
+    /** Removes the branch with the given name from the repo. */
+    public static void deleteBranch(String b) {
+        if (b.equals(getCurrentBranch())) {
+            System.out.println("Cannot delete the current branch.");
+            return;
+        }
+        try {
+            Files.delete(Paths.get("./.gitlet/branches/" + b));
+        } catch (NoSuchFileException e) {
+            System.out.println("The branch " + b + " does not exist.");
+        } catch (IOException e) {
+            System.out.println("Error deleting branch " + b);
         }
     }
     

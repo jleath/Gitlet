@@ -9,11 +9,16 @@ import java.util.Scanner;
 import java.io.PrintWriter;
 import java.io.IOException;
 
+/** A class of static utility methods for dealing with commits in a 
+ *  Gitlet repo.
+ *
+ *  @author Joshua Leath
+ */
 public final class CommitHandler {
     
     /** Commit a GitletObject to the repo. */
     public static void commitObject(GitletObject obj) {
-        ObjectManager.cacheNewFile(obj.getFileName(), obj.getId());
+        ObjectHandler.cacheNewFile(obj.getFileName(), obj.getId());
     }
 
     /** Restores all the files in the given commit C to the working
@@ -78,6 +83,9 @@ public final class CommitHandler {
         }
     }
 
+    /** Store the current commit (the commit that files are currently being
+     *  added to and removed from but has not yet been pushed, this is saved
+     *  in ".gitlet/CURR". */
     public static void cacheCurrentCommit() {
         cacheCurrentCommit(getIdOfCurrentCommit());
     }
