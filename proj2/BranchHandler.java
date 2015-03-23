@@ -91,13 +91,40 @@ public final class BranchHandler {
      *  commit. */
     public static void cacheBranch(Branch b) {
         try {
-        File file = new File("./.gitlet/branches/" + b.getName());
-        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-        out.print(b.getCommitId());
-        out.close();
+            File file = new File("./.gitlet/branches/" + b.getName());
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+            out.print(b.getCommitId());
+            out.close();
         } catch (IOException e) {
             System.out.println("Error writing branch file for " + b.getName());
         }
+        cacheSplitPoint(b);
+    }
+
+    /** Caches the splitPoint of the given branch in a file named
+     *  './.gitlet/splits/[branchName]'. */
+    public static void cacheSplitPoint(Branch b) {
+        try {
+            File file = new File("./.gitlet/splits/" + b.getName());
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+            out.print(b.getSplitPointId());
+            out.close();
+        } catch (IOException e) {
+            System.out.println("Error writing split file for " + b.getName());
+        }
+    }
+
+    /** Returns the id of the splitPoint commit for the given branchName. */
+    public static int getSplitPointId(String branchName) {
+        int result = -1;
+        File file = new File("./.gitlet/splits/" + branchName);
+        try {
+            Scanner scanner = new Scanner(file);
+            result = scanner.nextInt();
+        } catch (FileNotFoundException e) {
+            System.out.println("Split point for branch " + branchName + " does not exist.");
+        }
+        return result;
     }
 
     /** Returns the commit at the head of the branch named NAME,
