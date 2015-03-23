@@ -13,14 +13,24 @@ public class Branch {
     private int commitId;
     /** The name of this branch. */
     private String branchName;
+    /** The id of the commit that represents the split point of this
+     *  branch and other branches. */
+    private int splitPointId;
 
     public Branch(String name, int commitId) {
         this.commitId = commitId;
         branchName = name;
+        splitPointId = commitId;
     }
     
     public Branch(String name) {
         this(name, 0);
+    }
+
+    /** Return the id of the commit that represents the split point
+     *  of this branch and other branches. */
+    public int getSplitPointId() {
+        return splitPointId;
     }
 
     /** Sets the head commit of this branch to be the commit with
