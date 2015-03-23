@@ -48,10 +48,16 @@ public class Gitlet {
         } else if (command.equals("log")) {
             printLog();
 
+        } else if (command.equals("global-log")) {
+            printGlobalLog(); 
+
         } else if (command.equals("checkout")) {
             if (args.length == 3) {
                 warnUser();
-                // Deal with command checkout [commit id] [file name]
+                int commitId = Integer.parseInt(args[1]);
+                String fileName = args[2];
+                Commit c = CommitHandler.loadCommit(commitId);
+                ObjectHandler.pullFile(c.getObject(fileName));
             } else if (args.length == 2) {
                 warnUser();
                 if (BranchHandler.branchExists(args[1])) {
@@ -86,6 +92,19 @@ public class Gitlet {
                 System.out.println("No branch with the name " + args[1] + " exists.");
             } else {
                 BranchHandler.deleteBranch(args[1]);
+            }
+            
+        } else if (command.equals("reset")) {
+            if (args.length < 2) {
+                System.out.println("You must specify a commit id.");
+            }
+            int commitId = Integer.parseInt(args[1]);
+            warnUser();
+            if (CommitHandler.commitExists(commitId)) {
+                Commit c = CommitHandler.loadCommit(commitId);
+                CommitHandler.revertToCommit(c);
+            } else {
+                System.out.println("No commit with that idea exists.");
             }
         }
     }
@@ -127,6 +146,17 @@ public class Gitlet {
             System.out.println(go.getFileName());
         }
         System.out.println();
+    }
+
+    /** Print a global log, a log of all commits that have been made. */
+    private static void printGlobalLog() {
+        int currCommitId = CommitHandler.getIdOfCurrentCommit();
+        for (int id : CommitHandler.getCommitIds()) {
+            if (id != currCommitId) {
+                Commit curr = CommitHandler.loadCommit(id);
+                System.out.println(curr.getLogInfo());
+            }
+        }
     }
 
     /** Print a log of the current branch. */

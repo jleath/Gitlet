@@ -1,4 +1,6 @@
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.ObjectOutputStream;
@@ -8,6 +10,8 @@ import java.io.FileWriter;
 import java.util.Scanner;
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
 
 /** A class of static utility methods for dealing with commits in a 
  *  Gitlet repo.
@@ -27,6 +31,24 @@ public final class CommitHandler {
         for (GitletObject go : c.getAllButRemoved()) {
             ObjectHandler.pullFile(go);
         }
+    }
+
+    /** Return a collection of the ids of all commits that have been made
+     *  on all branches. */
+    public static Collection<Integer> getCommitIds() {
+        HashSet<Integer> result = new HashSet<Integer>();
+        File file = new File("./.gitlet/commits/");
+        File[] files = file.listFiles();
+        for (File f : files) {
+            result.add(Integer.parseInt(f.getName()));
+        }
+        return result;
+    }
+
+    /** Returns true if there is a commit with the given ID in the 
+     *  repo's commits directory, else false. */
+    public static boolean commitExists(int commitId) {
+        return Files.exists(Paths.get("./.gitlet/commits/" + commitId));
     }
 
     /** Returns the current commit. */
