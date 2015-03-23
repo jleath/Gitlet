@@ -1,11 +1,15 @@
 import static org.junit.Assert.*;
 import java.util.ArrayList;
 import org.junit.Test;
-import jh61b.grader.Test61B;
+// import jh61b.grader.Test61B;
 
-public class CardAutoGrader extends jh61b.grader.Autograder {
+// VERSION 2
+/* This file is identical to the Autograder except that it commented out 
+ * a few things that were causing errors on students' computers. */
 
-    @Test61B(name = "Card Perfect Hash Check")
+public class CardAutoGrader /*extends jh61b.grader.Autograder*/ {
+
+    // @Test61B(name = "Card Perfect Hash Check")
     public static void testHashCodes() {
         // First generate all of the possible cards in order
         ArrayList<Card> c1 = makeFullHand();
@@ -43,7 +47,9 @@ public class CardAutoGrader extends jh61b.grader.Autograder {
     }
 
     public static void main(String[] args) {
-        runStaticTests(CardAutoGrader.class);
+        // runStaticTests(CardAutoGrader.class);
+        testHashCodes();
+        System.out.println("All tests passed!");
     }
 
 }
