@@ -28,6 +28,8 @@ public class Commit implements Serializable {
     private String message;
     /** A unique id for this commit. */
     private int id;
+    /** The number of files staged in this commit. */
+    private int numStagedFiles;
 
     public Commit(int p) {
         parentId = p;
@@ -37,6 +39,7 @@ public class Commit implements Serializable {
         id = ObjectHandler.numFilesInDir(".gitlet/commits");
         Commit parent = CommitHandler.loadCommit(parentId);
         inheritFiles(parent);
+        numStagedFiles = 0;
     }
     
     /** A commit starts off with all of the same files as its parent,
@@ -48,7 +51,7 @@ public class Commit implements Serializable {
                 GitletObject curr = parent.objects.get(s);
                 if (!curr.isMarkedForRemoval()) {
                     GitletObject newCurr = new GitletObject(curr.getFileName(), curr.getId());
-                    objects.put(s, curr);
+                    objects.put(s, newCurr);
                 }
             }
         }
@@ -90,10 +93,11 @@ public class Commit implements Serializable {
                 return;
             }
         }
-        int nextId = ObjectHandler.numFilesInDir(".gitlet/obj");
+        int nextId = ObjectHandler.numFilesInDir(".gitlet/obj") + numStagedFiles;
         GitletObject newObj = new GitletObject(fileName, nextId);
         newObj.stage();
         objects.put(fileName, newObj);
+        numStagedFiles = numStagedFiles + 1;
         System.out.println("Staged file: " + fileName);
     }
 
