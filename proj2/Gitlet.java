@@ -1,5 +1,7 @@
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.Collection;
@@ -12,6 +14,7 @@ import java.util.Collection;
 public class Gitlet {
     public static void main(String[] args) {
         if (args.length == 0) {
+            printHelpFile();
             System.exit(0);
         }
         String command = args[0];
@@ -54,26 +57,23 @@ public class Gitlet {
 
         } else if (command.equals("checkout")) {
             if (args.length == 3) {
-                warnUser();
                 int commitId = Integer.parseInt(args[1]);
                 String fileName = args[2];
-                Commit c = CommitHandler.loadCommit(commitId);
-                ObjectHandler.pullFile(c.getObject(fileName));
+                checkoutByFileAndCommit(commitId, fileName);
             } else if (args.length == 2) {
-                warnUser();
                 if (BranchHandler.branchExists(args[1])) {
-                    CommitHandler.revertToCommit(BranchHandler.getHeadOfBranch(args[1]));
-                    BranchHandler.setCurrentBranch(args[1]);
-                    Commit curr = CommitHandler.getCurrentCommit();
-                    curr.setParentId(BranchHandler.getIdOfHeadCommit());
-                    CommitHandler.storeCommit(curr);
+                    String branchName = args[1];
+                    checkoutByBranch(branchName);
                 } else if (Files.exists(Paths.get(args[1]))) {
-                    Commit head = CommitHandler.loadCommit(BranchHandler.getIdOfHeadCommit());
-                    ObjectHandler.pullFile(head.getObject(args[1]));
+                    String fileName = args[1];
+                    checkoutByFile(fileName);
                 } else {
                     System.out.println("A file or branch with that name does not exist.");
                 }
-            } 
+            } else {
+                System.out.println("You must specify either a file name, a branch name"
+                        + " or a commit id followed by a file name.");
+            }
 
         } else if (command.equals("branch")) {
             if (args.length != 2) {
@@ -126,6 +126,59 @@ public class Gitlet {
                 }
             }
         }
+    }
+    
+    /** Prints helpful information about commands to the user. */
+    private static void printHelpFile() {
+        try {
+            File helpFile = new File("./help.txt");
+            Scanner in = new Scanner(helpFile);
+            while (in.hasNextLine()) {
+                System.out.println(in.nextLine());
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading help.txt");
+        }
+    }
+
+    /** Copy the version of FILENAME stored in the commit with id COMMITID to
+     *  the working directory. */
+    private static void checkoutByFileAndCommit(int commitId, String fileName) {
+        warnUser();
+        Commit c = CommitHandler.loadCommit(commitId);
+        ObjectHandler.pullFile(c.getObject(fileName));
+    }
+
+    /** Switch to the branch BRANCHNAME, overwriting the necessary files to 
+     *  make the files in the working directory match the state of files in the
+     *  latest commit of BRANCHNAME. */
+    private static void checkoutByBranch(String branchName) {
+        warnUser();
+        Commit current = CommitHandler.getCurrentCommit();
+        if (current.getStagedFiles().size() > 0) {
+            System.out.println("Warning: You have staged files that have not been"
+                    + " pushed.  If you continue, these files will be unstaged and"
+                    + " you may lose unsaved changes in your working directory."
+                    + " Continue? (yes/no)");
+            Scanner in = new Scanner(System.in);
+            String response = in.next();
+            if (!(response.equals("yes"))) {
+                return;
+            }
+        }
+        CommitHandler.revertToCommit(BranchHandler.getHeadOfBranch(branchName));
+        BranchHandler.setCurrentBranch(branchName);
+        Commit curr = CommitHandler.getCurrentCommit();
+        curr.setParentId(BranchHandler.getIdOfHeadCommit());
+        CommitHandler.storeCommit(curr);
+    }
+
+    /** Revert the file FILENAME in the working directory to the most recent
+     *  commit in the current branch. */
+    private static void checkoutByFile(String fileName) {
+        warnUser();
+        Commit head = CommitHandler.loadCommit(BranchHandler.getIdOfHeadCommit());
+        ObjectHandler.pullFile(head.getObject(fileName));
     }
 
     /** Merges GIVENBRANCH into CURRENTBRANCH. */

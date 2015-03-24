@@ -1,0 +1,16 @@
+usage: Gitlet <command> [<args>]
+
+Commands:
+    init                    Initialize a git repo
+    add [file-name]         Add [file-name] contents to the index
+    rm [file-name]          Remove a file from the index
+    commit [message]        Record changes to the repo
+    branch [branch-name]    Create a new branch
+    rm-branch [branch-name] Delete the given branch
+    checkout [file-name]    Checkout files to the working directory
+    checkout [branch-name]  
+    checkout [commit-id] [file-name]
+    log                     Display a list of commits on the current branch
+    global-log              Display a list of all commits
+    merge [branch-name]     Join the current branch and the given branch
+    status                  Display branches, staged files, and removed files
