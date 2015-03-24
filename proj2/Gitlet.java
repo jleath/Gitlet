@@ -6,21 +6,24 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.Collection;
 
-/** The user interface for Gitlet, run Gitlet with the help command for more
- *  information.
+/** The user interface for Gitlet.
  *
  *  @author Joshua Leath
  */
 public class Gitlet {
     public static void main(String[] args) {
+        // No commands will cause the help.txt file to be printed
         if (args.length == 0) {
             printHelpFile();
             System.exit(0);
         }
+
         String command = args[0];
+        // The 'init' command initializes the repository
         if (command.equals("init")) {
             init();
 
+        // The add command stages files
         } else if (command.equals("add")) {
             if (args.length != 2) {
                 System.out.println("You must specify a file to stage.");
@@ -32,6 +35,7 @@ public class Gitlet {
                 }
             }
 
+        // The commit command stores commits in the repo
         } else if (command.equals("commit")) {
             if (args.length != 2) {
                 System.out.println("A commit must have a message");
@@ -40,6 +44,7 @@ public class Gitlet {
                 curr.push(args[1]);
             }
 
+        // The rm commands marks files to be removed from the repo
         } else if (command.equals("rm")) {
             if (args.length != 2) {
                 System.out.println("Must specify a file.");
@@ -49,12 +54,16 @@ public class Gitlet {
                 CommitHandler.storeCommit(curr);
             }
 
+        // The log command prints a branch log
         } else if (command.equals("log")) {
             printLog();
 
+        // The global-log command prints the branch log for each branch
         } else if (command.equals("global-log")) {
             printGlobalLog(); 
 
+        // The checkout command reverts files to their stored state
+        // and switches between branches
         } else if (command.equals("checkout")) {
             if (args.length == 3) {
                 int commitId = Integer.parseInt(args[1]);
@@ -75,6 +84,7 @@ public class Gitlet {
                         + " or a commit id followed by a file name.");
             }
 
+        // The branch command creates new branches
         } else if (command.equals("branch")) {
             if (args.length != 2) {
                 System.out.println("You must specify a branch name.");
@@ -87,9 +97,13 @@ public class Gitlet {
                 BranchHandler.cacheSplitPoint(nb);
             }
 
+        // The status command prints the branches, staged files,
+        // and files that have been marked for removal
         } else if (command.equals("status")) {
             printStatus();
 
+        // The rm-branch command removes branches from the repos,
+        // but not their commits
         } else if (command.equals("rm-branch")) {
             if (!(BranchHandler.branchExists(args[1]))) {
                 System.out.println("No branch with the name " + args[1] + " exists.");
@@ -97,6 +111,8 @@ public class Gitlet {
                 BranchHandler.deleteBranch(args[1]);
             }
             
+        // The reset command reverts the files in the working directory
+        // to their state in the given commit
         } else if (command.equals("reset")) {
             if (args.length < 2) {
                 System.out.println("You must specify a commit id.");
@@ -111,6 +127,7 @@ public class Gitlet {
                 }
             }
 
+        // The merge command merges two branches
         } else if (command.equals("merge")) {
             if (args.length < 2) {
                 System.out.println("You must specify a branch to merge.");
@@ -203,7 +220,7 @@ public class Gitlet {
      *  is entered the program will proceed, otherwise it will exit. */
     private static void warnUser() {
         System.out.println("Warning, the command you entered may alter the files"
-                + " in your working directory.  Uncommited changes may be lost."
+                + " in your working directory.  Uncommitted changes may be lost."
                 + " Are you sure you want to continue? (yes/no)");
         Scanner in = new Scanner(System.in);
         String response = in.next();
