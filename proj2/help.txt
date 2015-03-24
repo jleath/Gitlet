@@ -1,7 +1,7 @@
 usage: Gitlet <command> [<args>]
 
 Commands:
-    init                    Initialize a git repo
+    init                    Initialize a gitlet repo
     add [file-name]         Add [file-name] contents to the index
     rm [file-name]          Remove a file from the index
     commit [message]        Record changes to the repo
