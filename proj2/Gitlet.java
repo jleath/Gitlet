@@ -216,7 +216,7 @@ public class Gitlet {
     }
 
     /** Warns the user that the command they entered may alter files in the
-     *  working directory, prompts the user to enter yes or no, if the yes
+     *  working directory, prompts the user to enter yes or no, if yes
      *  is entered the program will proceed, otherwise it will exit. */
     private static void warnUser() {
         System.out.println("Warning, the command you entered may alter the files"
