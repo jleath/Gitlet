@@ -17,17 +17,17 @@ import java.io.FileNotFoundException;
 import java.util.NoSuchElementException;
 
 /** This is a utility class with static methods for working with
- *  files and GitletObjects.
+ *  files and TinyGitObjects.
  *
  *  This class is responsible for the actual mechanical work of
- *  caching and writing the files that GitletObjects point to.
+ *  caching and writing the files that TinyGitObjects point to.
  *  This class also has static methods for serializing and 
  *  deserializing objects.
  *
  *  Several of the methods in this class assume that the working directory
- *  contains a directory called .gitlet and that the .gitlet directory
+ *  contains a directory called .tinyGit and that the .tinyGit directory
  *  contains another directory called obj.  Therefore, none of this code
- *  should be used before a gitlet repository is initialized.  Failure to
+ *  should be used before a tinyGit repository is initialized.  Failure to
  *  do this will result in IOExceptions.
  *
  *  @author Joshua Leath
@@ -39,18 +39,18 @@ public final class ObjectHandler {
         return new File(dirPath).list().length;
     }
 
-    /** Overwrite the GitletObject OBJ's associated file with the content
+    /** Overwrite the TinyGitObject OBJ's associated file with the content
      *  that the file had at the time OBJ was commited. */
-    public static void pullFile(GitletObject obj) {
+    public static void pullFile(TinyGitObject obj) {
         ObjectHandler.copyToWorkingDirectory(obj.getId(), obj.getFileName());
     }
 
     /** Stores a backup of the file with the name FILENAME,
-     *  saves it in the 'objects' directory of the gitlet repo
+     *  saves it in the 'objects' directory of the tinyGit repo
      *  with ID as the filename. */
     public static void cacheNewFile(String fileName, int id) {
         File toCache = new File(fileName);
-        File dest = new File("./.gitlet/obj/" + id + ".go");
+        File dest = new File("./.tinyGit/obj/" + id + ".go");
         if (!toCache.exists()) {
             System.out.println("File " + fileName + " does not exist.");
         } else if (dest.exists()) {
@@ -58,7 +58,7 @@ public final class ObjectHandler {
         } else {
             try {
                 Files.copy(Paths.get(fileName), 
-                        Paths.get("./.gitlet/obj/" + id + ".go"));
+                        Paths.get("./.tinyGit/obj/" + id + ".go"));
             } catch (IOException e) {
                 System.out.println("Error making backup of " + fileName);
             }
@@ -66,16 +66,16 @@ public final class ObjectHandler {
     }
 
     /** Stores a backup of a conflicted file during a branch merge in the
-     *  '.gitlet/obj/' directory as [fileName].conflicted. */
+     *  '.tinyGit/obj/' directory as [fileName].conflicted. */
     public static void cacheConflictedFile(String fileName, int id) {
         File toCache = new File(fileName);
-        File dest = new File("./.gitlet/obj/" + fileName + ".conflicted");
+        File dest = new File("./.tinyGit/obj/" + fileName + ".conflicted");
         if (!toCache.exists()) {
             System.out.println("File " + fileName + " does not exist.");
         } else {
             try {
-                Files.copy(Paths.get("./.gitlet/obj/" + id + ".go"),
-                        Paths.get("./.gitlet/obj/" + fileName + ".conflicted"));
+                Files.copy(Paths.get("./.tinyGit/obj/" + id + ".go"),
+                        Paths.get("./.tinyGit/obj/" + fileName + ".conflicted"));
             } catch (IOException e) {
                 System.out.println("Error making backup of " + fileName);
             }
@@ -85,13 +85,13 @@ public final class ObjectHandler {
     /** Copies the file with the given ID in the 'objects'
      *  directory to the path given by FILENAME. */
     public static void copyToWorkingDirectory(int id, String fileName) {
-        File toCopy = new File("./.gitlet/obj/" + id + ".go");
+        File toCopy = new File("./.tinyGit/obj/" + id + ".go");
         File dest = new File(fileName);
         if (!toCopy.exists()) {
             System.out.println("File " + fileName + " does not exist.");
         } else {
             try {
-                Files.copy(Paths.get("./.gitlet/obj/" + id + ".go"), 
+                Files.copy(Paths.get("./.tinyGit/obj/" + id + ".go"), 
                         Paths.get(fileName), REPLACE_EXISTING);
             } catch (IOException e) {
                 System.out.println("Error pulling object " + id

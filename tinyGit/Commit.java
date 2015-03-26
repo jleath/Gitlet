@@ -21,7 +21,7 @@ public class Commit implements Serializable {
     /** The id of the commit that preceded this commit. */
     private int parentId;
     /** A mapping from filenames to their most current snapshots. */
-    private HashMap<String, GitletObject> objects;
+    private HashMap<String, TinyGitObject> objects;
     /** The date this commit was pushed. */
     private Date commitDate;
     /** The message given to this commit by the user. */
@@ -33,24 +33,24 @@ public class Commit implements Serializable {
 
     public Commit(int p) {
         parentId = p;
-        objects = new HashMap<String, GitletObject>();
+        objects = new HashMap<String, TinyGitObject>();
         commitDate = null;
         message = null;
-        id = ObjectHandler.numFilesInDir(".gitlet/commits");
+        id = ObjectHandler.numFilesInDir(".tinyGit/commits");
         Commit parent = CommitHandler.loadCommit(parentId);
         inheritFiles(parent);
         numStagedFiles = 0;
     }
     
     /** A commit starts off with all of the same files as its parent,
-     *  this copies all the GitletObjects that have not been marked for removal
+     *  this copies all the TinyGitObjects that have not been marked for removal
      *  into this commit. */
     public void inheritFiles(Commit parent) {
         if (parent != null) {
             for (String s : parent.objects.keySet()) {
-                GitletObject curr = parent.objects.get(s);
+                TinyGitObject curr = parent.objects.get(s);
                 if (!curr.isMarkedForRemoval()) {
-                    GitletObject newCurr = new GitletObject(curr.getFileName(), curr.getId());
+                    TinyGitObject newCurr = new TinyGitObject(curr.getFileName(), curr.getId());
                     objects.put(s, newCurr);
                 }
             }
@@ -61,7 +61,7 @@ public class Commit implements Serializable {
      *  directory, updates the branch pointer to point to C, and
      *  creates a new current commit. */
     public void push(String message) {
-        for (GitletObject go : getStagedFiles()) {
+        for (TinyGitObject go : getStagedFiles()) {
             CommitHandler.commitObject(go);
             System.out.println("Pushed file: " + go.getFileName());
             go.update();
@@ -84,7 +84,7 @@ public class Commit implements Serializable {
     public void stageFile(String fileName) {
         // If this fileName is already found in this commit.
         if (objects.containsKey(fileName)) {
-            GitletObject lastCommit = objects.get(fileName);
+            TinyGitObject lastCommit = objects.get(fileName);
             Date lastMod = ObjectHandler.getLastModifiedDate(fileName);
             Date commitDate = lastCommit.lastCommitDate();
             if (commitDate != null && lastMod.before(commitDate)) {
@@ -93,8 +93,8 @@ public class Commit implements Serializable {
                 return;
             }
         }
-        int nextId = ObjectHandler.numFilesInDir(".gitlet/obj") + numStagedFiles;
-        GitletObject newObj = new GitletObject(fileName, nextId);
+        int nextId = ObjectHandler.numFilesInDir(".tinyGit/obj") + numStagedFiles;
+        TinyGitObject newObj = new TinyGitObject(fileName, nextId);
         newObj.stage();
         objects.put(fileName, newObj);
         numStagedFiles = numStagedFiles + 1;
@@ -108,7 +108,7 @@ public class Commit implements Serializable {
      *  the working directory. */
     public void markForRemoval(String fileName) {
         if (objects.containsKey(fileName)) {
-            GitletObject toRemove = objects.get(fileName);
+            TinyGitObject toRemove = objects.get(fileName);
             toRemove.unstage();
             toRemove.markForRemoval();
             objects.put(fileName, toRemove);
@@ -120,12 +120,12 @@ public class Commit implements Serializable {
         }
     }
 
-    /** Returns a collection of the GitletObjects in this commit
+    /** Returns a collection of the TinyGitObjects in this commit
      *  that have been staged. */
-    public Collection<GitletObject> getStagedFiles() {
-        HashSet<GitletObject> result = new HashSet<GitletObject>();
+    public Collection<TinyGitObject> getStagedFiles() {
+        HashSet<TinyGitObject> result = new HashSet<TinyGitObject>();
         for (String name : objects.keySet()) {
-            GitletObject curr = objects.get(name);
+            TinyGitObject curr = objects.get(name);
             if (curr.isStaged()) {
                 result.add(curr);
             }
@@ -135,10 +135,10 @@ public class Commit implements Serializable {
 
     /** Returns a collection of all the files in this commit
      *  but those that have been marked for removal. */
-    public Collection<GitletObject> getAllButRemoved() {
-        HashSet<GitletObject> result = new HashSet<GitletObject>();
+    public Collection<TinyGitObject> getAllButRemoved() {
+        HashSet<TinyGitObject> result = new HashSet<TinyGitObject>();
         for (String name : objects.keySet()) {
-            GitletObject curr = objects.get(name);
+            TinyGitObject curr = objects.get(name);
             if (!(curr.isMarkedForRemoval())) {
                 result.add(curr); 
             }
@@ -146,12 +146,12 @@ public class Commit implements Serializable {
         return result;
     }
 
-    /** Returns a collection of the GitletObjects in this commit
+    /** Returns a collection of the TinyGitObjects in this commit
      *  that have been marked for removal. */
-    public Collection<GitletObject> getRemovedFiles() {
-        HashSet<GitletObject> result = new HashSet<GitletObject>();
+    public Collection<TinyGitObject> getRemovedFiles() {
+        HashSet<TinyGitObject> result = new HashSet<TinyGitObject>();
         for (String name : objects.keySet()) {
-            GitletObject curr = objects.get(name);
+            TinyGitObject curr = objects.get(name);
             if (curr.isMarkedForRemoval()) {
                 result.add(curr);
             }
@@ -161,7 +161,7 @@ public class Commit implements Serializable {
 
     /** Return the snapshot of the file associated with FILENAME in this
      *  commit. */
-    public GitletObject getObject(String fileName) {
+    public TinyGitObject getObject(String fileName) {
         return objects.get(fileName);
     }
 

@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.nio.file.NoSuchFileException;
 
-/** A class of static utility methods for dealing with branches in a gitlet repo.
+/** A class of static utility methods for dealing with branches in a tinyGit repo.
  *
  *  @author Joshua Leath
  */
@@ -24,7 +24,7 @@ public final class BranchHandler {
         Commit branchHead = getHeadOfBranch(branchName);
         HashSet<String> result = new HashSet<String>();
         while (!(branchHead.getMessage().equals("initial commit")) && branchHead.getId() != stopId) {
-            for (GitletObject go : branchHead.getStagedFiles()) {
+            for (TinyGitObject go : branchHead.getStagedFiles()) {
                 result.add(go.getFileName());
             }
             branchHead = CommitHandler.loadCommit(branchHead.getParentId());
@@ -33,10 +33,10 @@ public final class BranchHandler {
     }
     
     /** Sets the name of the current branch. This name is located in the file
-     *  found at '.gitlet/HEAD'. */
+     *  found at '.tinyGit/HEAD'. */
     public static void setCurrentBranch(String b) {
         try {
-            File file = new File("./.gitlet/HEAD");
+            File file = new File("./.tinyGit/HEAD");
             PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
             out.print(b);
             out.close();
@@ -52,7 +52,7 @@ public final class BranchHandler {
             return;
         }
         try {
-            Files.delete(Paths.get("./.gitlet/branches/" + b));
+            Files.delete(Paths.get("./.tinyGit/branches/" + b));
         } catch (NoSuchFileException e) {
             System.out.println("The branch " + b + " does not exist.");
         } catch (IOException e) {
@@ -63,7 +63,7 @@ public final class BranchHandler {
     /** Returns a collection of the names of all existing branches. */
     public static Collection<String> getBranchNames() {
         HashSet<String> results = new HashSet<String>();
-        File file = new File("./.gitlet/branches/");
+        File file = new File("./.tinyGit/branches/");
         File[] files = file.listFiles();
         for (File f : files) {
             if (f.isFile()) {
@@ -84,7 +84,7 @@ public final class BranchHandler {
     public static String getCurrentBranch() {
         String name = null;
         try {
-            File file = new File("./.gitlet/HEAD");
+            File file = new File("./.tinyGit/HEAD");
             Scanner in = new Scanner(file);
             name = in.next();
             in.close();
@@ -98,7 +98,7 @@ public final class BranchHandler {
 
     /** Returns true a branch named NAME exists, else false. */
     public static boolean branchExists(String name) {
-        return Files.exists(Paths.get("./.gitlet/branches/" + name)); 
+        return Files.exists(Paths.get("./.tinyGit/branches/" + name)); 
     }
 
     /** Caches a branch, saving it as a file in the 'branches' directory
@@ -106,7 +106,7 @@ public final class BranchHandler {
      *  commit. */
     public static void cacheBranch(Branch b) {
         try {
-            File file = new File("./.gitlet/branches/" + b.getName());
+            File file = new File("./.tinyGit/branches/" + b.getName());
             PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
             out.print(b.getCommitId());
             out.close();
@@ -116,10 +116,10 @@ public final class BranchHandler {
     }
 
     /** Caches the splitPoint of the given branch in a file named
-     *  './.gitlet/splits/[branchName]'. */
+     *  './.tinyGit/splits/[branchName]'. */
     public static void cacheSplitPoint(Branch b) {
         try {
-            File file = new File("./.gitlet/splits/" + b.getName());
+            File file = new File("./.tinyGit/splits/" + b.getName());
             PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
             out.print(b.getSplitPointId());
             out.close();
@@ -131,7 +131,7 @@ public final class BranchHandler {
     /** Returns the id of the splitPoint commit for the given branchName. */
     public static int getSplitPointId(String branchName) {
         int result = -1;
-        File file = new File("./.gitlet/splits/" + branchName);
+        File file = new File("./.tinyGit/splits/" + branchName);
         try {
             Scanner scanner = new Scanner(file);
             result = scanner.nextInt();
@@ -145,7 +145,7 @@ public final class BranchHandler {
      *  returns null if the branch does not exist. */
     public static Commit getHeadOfBranch(String name) {
         Commit result = null;
-        File file = new File("./.gitlet/branches/" + name);
+        File file = new File("./.tinyGit/branches/" + name);
         try {
             Scanner scanner = new Scanner(file);
             int commitId = scanner.nextInt();

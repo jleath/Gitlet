@@ -5,23 +5,40 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 
+/** This class is an experiment and is not yet implement in tinyGit.
+ *  Prototyping ideas for sharing tinyGit repos across machines. */
+
 public class RemoteHandler {
 
-    /** Pulls a file from the remote R located at 'r.getPath()/filePath'
-     *  and copies it to '.gitlet/destPath' on the local machine. */
-    private static void getFileFromRemote(Remote r, String filePath, String destPath) {
+    /** Pulls a file from the remote R located at FILEPATH and copies it
+     *  to DESTPATH on the local machine. */
+    public static void getFileFromRemote(Remote r, String filePath, String destPath) {
+        String cmd = "scp " + r.getUserName() + "@" + r.getServer() + ":" + r.getPath() 
+            + filePath + " " + destPath;
+        System.out.println(cmd);
         try {
-            Runtime.getRuntime().exec("scp " + r.getUserName() + "@"
-                    + r.getServer() + ":" + filePath + " " + destPath);
+            Runtime.getRuntime().exec(cmd);
         } catch (IOException e) {
-            System.out.println("Error retrieving " + filePath + " from remote" 
+            System.out.println("Error retrieving " + filePath + " from remote " 
                     + r.getName());
         }
-        // Check to make sure the file was retrieved.
-        File file = new File("./.gitlet/" + filePath);
+    }
+
+    /** Sends the file located at PATH to DESTPATH on remote machine R. */
+    public static void pushFileToRemote(Remote r, String path, String destPath) {
+        String cmd = "scp " + path + " " + r.getUserName() + "@" + r.getServer()
+            + ":" + r.getPath() + destPath;
+        System.out.println(cmd);
+        File file = new File(path);
         if (!file.exists()) {
-            System.out.println("Error retrieving " + filePath + " from remote "
-                    + r.getName());
+            System.out.println("File " + path + " does not exist on this machine.");
+        } else {
+            try {
+                Runtime.getRuntime().exec(cmd);
+            } catch (IOException e) {
+                System.out.println("Error pushing " + path + " to remote "
+                        + r.getName());
+            }
         }
     }
 

@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.Collection;
 
-/** The user interface for Gitlet.
+/** The user interface for tinyGit.
  *
  *  @author Joshua Leath
  */
-public class Gitlet {
+public class TinyGit {
     public static void main(String[] args) {
         // No commands will cause the help.txt file to be printed
         if (args.length == 0) {
@@ -144,7 +144,7 @@ public class Gitlet {
             }
         }
     }
-    
+
     /** Prints helpful information about commands to the user. */
     private static void printHelpFile() {
         try {
@@ -209,7 +209,7 @@ public class Gitlet {
                 ObjectHandler.pullFile(givenHead.getObject(fileName));
             } else {
                 System.out.println("Conflicting file during merge: " + fileName);
-                GitletObject conflict = givenHead.getObject(fileName);
+                TinyGitObject conflict = givenHead.getObject(fileName);
                 ObjectHandler.cacheConflictedFile(conflict.getFileName(), conflict.getId());
             }
         }
@@ -243,12 +243,12 @@ public class Gitlet {
         System.out.println();
         System.out.println("=== Staged Files ===");
         Commit currCommit = CommitHandler.getCurrentCommit();
-        for (GitletObject go : currCommit.getStagedFiles()) {
+        for (TinyGitObject go : currCommit.getStagedFiles()) {
             System.out.println(go.getFileName());
         }
         System.out.println();
         System.out.println("=== Files Marked for Removal ===");
-        for (GitletObject go : currCommit.getRemovedFiles()) {
+        for (TinyGitObject go : currCommit.getRemovedFiles()) {
             System.out.println(go.getFileName());
         }
         System.out.println();
@@ -282,10 +282,10 @@ public class Gitlet {
         CommitHandler.storeCommit(curr);
     }
 
-    /** Initialize the gitlet repo. */
+    /** Initialize the tinyGit repo. */
     private static void init() {
-        if (Files.exists(Paths.get("./.gitlet/"))) {
-            System.out.println("Gitlet repo already exists.");
+        if (Files.exists(Paths.get("./.tinyGit/"))) {
+            System.out.println("tinyGit repo already exists.");
             return;
         }
         createDirectories();
@@ -295,19 +295,20 @@ public class Gitlet {
         BranchHandler.setCurrentBranch("master");
         BranchHandler.cacheSplitPoint(master);
         defaultCom.push("initial commit");
-        System.out.println("Gitlet repo initialized!");
+        System.out.println("tinyGit repo initialized!");
     }
 
-    /** Create the gitlet repo directories. */
+    /** Create the tinyGit repo directories. */
     private static void createDirectories() {
         try {
-            Files.createDirectory(Paths.get("./.gitlet/"));
-            Files.createDirectory(Paths.get("./.gitlet/obj"));
-            Files.createDirectory(Paths.get("./.gitlet/branches"));
-            Files.createDirectory(Paths.get("./.gitlet/commits"));
-            Files.createDirectory(Paths.get("./.gitlet/splits"));
+            Files.createDirectory(Paths.get("./.tinyGit/"));
+            Files.createDirectory(Paths.get("./.tinyGit/obj"));
+            Files.createDirectory(Paths.get("./.tinyGit/branches"));
+            Files.createDirectory(Paths.get("./.tinyGit/commits"));
+            Files.createDirectory(Paths.get("./.tinyGit/splits"));
+            Files.createDirectory(Paths.get("./.tinyGit/remotes"));
         } catch (IOException e) {
-            System.out.println("Error creating gitlet repo directories.");
+            System.out.println("Error creating tinyGit repo directories.");
         }
     }
 }

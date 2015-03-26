@@ -1,7 +1,7 @@
-usage: Gitlet <command> [<args>]
+usage: TinyGit <command> [<args>]
 
 Commands:
-    init                    Initialize a gitlet repo
+    init                    Initialize a tinyGit repo
     add [file-name]         Add [file-name] contents to the index
     rm [file-name]          Remove a file from the index
     commit [message]        Record changes to the repo

@@ -14,21 +14,21 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /** A class of static utility methods for dealing with commits in a 
- *  Gitlet repo.
+ *  tinyGit repo.
  *
  *  @author Joshua Leath
  */
 public final class CommitHandler {
     
-    /** Commit a GitletObject to the repo. */
-    public static void commitObject(GitletObject obj) {
+    /** Commit a TinyGitObject to the repo. */
+    public static void commitObject(TinyGitObject obj) {
         ObjectHandler.cacheNewFile(obj.getFileName(), obj.getId());
     }
 
     /** Restores all the files in the given commit C to the working
      *  directory. */
     public static void revertToCommit(Commit c) {
-        for (GitletObject go : c.getAllButRemoved()) {
+        for (TinyGitObject go : c.getAllButRemoved()) {
             ObjectHandler.pullFile(go);
         }
     }
@@ -37,7 +37,7 @@ public final class CommitHandler {
      *  on all branches. */
     public static Collection<Integer> getCommitIds() {
         HashSet<Integer> result = new HashSet<Integer>();
-        File file = new File("./.gitlet/commits/");
+        File file = new File("./.tinyGit/commits/");
         File[] files = file.listFiles();
         for (File f : files) {
             result.add(Integer.parseInt(f.getName()));
@@ -48,7 +48,7 @@ public final class CommitHandler {
     /** Returns true if there is a commit with the given ID in the 
      *  repo's commits directory, else false. */
     public static boolean commitExists(int commitId) {
-        return Files.exists(Paths.get("./.gitlet/commits/" + commitId));
+        return Files.exists(Paths.get("./.tinyGit/commits/" + commitId));
     }
 
     /** Returns the current commit. */
@@ -62,7 +62,7 @@ public final class CommitHandler {
             return;
         }
         try {
-            File destFile = new File(".gitlet/commits/" + obj.getId());
+            File destFile = new File(".tinyGit/commits/" + obj.getId());
             FileOutputStream fileOut = new FileOutputStream(destFile);
             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
             objectOut.writeObject(obj);
@@ -75,7 +75,7 @@ public final class CommitHandler {
      *  returns null if there is no file with the name FILENAME. */
     public static Commit loadCommit(int id) {
         Commit result = null;
-        String fileName = ".gitlet/commits/" + id;
+        String fileName = ".tinyGit/commits/" + id;
         File src = new File(fileName);
         if (src.exists()) {
             try {
@@ -93,10 +93,10 @@ public final class CommitHandler {
 
     /** Store the current commit (the commit that files are currently
      *  being added to and removed from but has not yet been pushed, this
-     *  is saved in ".gitlet/CURR". */
+     *  is saved in ".tinyGit/CURR". */
     public static void cacheCurrentCommit(int id) {
         try {
-            File file = new File("./.gitlet/CURR");
+            File file = new File("./.tinyGit/CURR");
             PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
             out.print(id);
             out.close();
@@ -107,19 +107,19 @@ public final class CommitHandler {
 
     /** Store the current commit (the commit that files are currently being
      *  added to and removed from but has not yet been pushed, this is saved
-     *  in ".gitlet/CURR". */
+     *  in ".tinyGit/CURR". */
     public static void cacheCurrentCommit() {
         cacheCurrentCommit(getIdOfCurrentCommit());
     }
 
     /** Returns the integer id of the current commit (the commit that files are
      *  currently being added to and removed from but has not yet been pushed,
-     *  this is saved in ".gitlet/CURR".
+     *  this is saved in ".tinyGit/CURR".
      *  Returns -1 if there is no file at this location. */
     public static int getIdOfCurrentCommit() {
         int commitId = -1;
         try {
-            File file = new File("./.gitlet/CURR");
+            File file = new File("./.tinyGit/CURR");
             Scanner in = new Scanner(file);
             commitId = in.nextInt();
         } catch (IOException e) {

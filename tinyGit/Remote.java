@@ -6,6 +6,9 @@ import java.io.FileWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+/** This class is just an experiment and is not yet implemented in tinyGit.
+ *  Prototying ideas for allowing tinyGit repo sharing across machines. */
+
 public class Remote {
     private String name;
     private String userName;
@@ -16,7 +19,34 @@ public class Remote {
         name = n;
         userName = u;
         server = s;
+        if (p.charAt(p.length() - 1) == '/') {
+            p = p.substring(0, p.length() - 1);
+        }
         path = p;
+    }
+
+    public String getCommitPath(int commitId) {
+        return path + "/.gitlet/commits/" + commitId;
+    }
+
+    public String getObjectPath(int objectId) {
+        return path + "/.gitlet/obj/" + objectId + ".go";
+    }
+
+    public String getBranchPath(String branchName) {
+        return path + "/.gitlet/branches/" + branchName;
+    }
+
+    public String getSplitPath(String branchName) {
+        return path + "/.gitlet/splits/" + branchName;
+    }
+
+    public String getCurrPath() {
+        return path + "/.gitlet/CURR";
+    }
+
+    public String getHeadPath() {
+        return path + "/.gitlet/HEAD";
     }
 
     public String getPath() {

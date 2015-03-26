@@ -1,8 +1,8 @@
-/** A small class representing a branch of a gitlet repo.
+/** A small class representing a branch of a tinyGit repo.
  *
  *  A branch merely stores the id of the commit at the head
  *  of this branch and has a name.  Branches are saved in the
- *  gitlet repo in the 'branches' directory as files.  These
+ *  tinyGit repo in the 'branches' directory as files.  These
  *  files are named after the branch and contain the id of the
  *  head commit.
  *

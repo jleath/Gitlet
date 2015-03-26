@@ -1,17 +1,17 @@
 import java.util.Date;
 import java.io.Serializable;
 
-/** A class representing a file in a gitlet repo.
+/** A class representing a file in a tinyGit repo.
  *
- *  A gitlet object represents a file at a specific point in time.
- *  The file itself is saved in the 'obj' directory of the gitlet
- *  repo.  A gitlet object itself stores no content, it is simply
+ *  A tinyGit object represents a file at a specific point in time.
+ *  The file itself is saved in the 'obj' directory of the tinyGit
+ *  repo.  A tinyGit object itself stores no content, it is simply
  *  a description of a file that has been backed up and cached in
  *  the repo.
  *
  *  @author Joshua Leath
  */
-public class GitletObject implements Serializable {
+public class TinyGitObject implements Serializable {
     /** The date that this object was last committed in the repo. */
     private Date lastCommit;
     /** A boolean representing whether the variable has been staged. */
@@ -22,10 +22,10 @@ public class GitletObject implements Serializable {
     /** A string representing the name of the file that this object
      *  is associated. */
     private String fileName;
-    /** An id number to distinguish different GitletObjects. */
+    /** An id number to distinguish different tinyGitObjects. */
     private int id;
 
-    public GitletObject(String fileName, int id) {
+    public TinyGitObject(String fileName, int id) {
         this.fileName = fileName;
         this.id = id;
         staged = false;
@@ -71,7 +71,7 @@ public class GitletObject implements Serializable {
         return markedForRemove;
     }
 
-    /** Updates the gitlet object to correctly store the committal date. */
+    /** Updates the tinyGit object to correctly store the committal date. */
     public void update() {
         setCommitDate(new Date());
     }
